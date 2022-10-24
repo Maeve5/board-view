@@ -20,7 +20,7 @@ export default React.memo(Home);
 
 export const getServerSideProps = async () => {
   try {
-    const res = await API.get('/test/test')
+    const res = await API.get('/test')
     console.log('res', typeof res.data);
     const data = res.data;
     return { props: { data } }
