@@ -1,10 +1,65 @@
-import React from 'react';
+import { Input } from 'antd';
+import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import React, { useState } from 'react';
+import TopHeader from '../../components/global/TopHeader';
+import { useAsync } from 'react-async';
 
 const MyPage = () => {
+
+	// const [name, setName] = useState('');
+	// const [nickname, setNickname] = useState('');
+
+	// const initData = useCallback(() => {
+	// 	setName();
+	// 	setNickname();
+	// }, []);
+
+	const user = useAsync('get', `/v1/user`);
+	console.log('user', user);
+
 	return (
-		<div>
-			
-		</div>
+		<>
+			<TopHeader></TopHeader>
+			<div className='mypage'>
+				<div className='input'>
+					<div className='title'>이름</div>
+					<div>
+						<Input
+							type='text'
+							placeholder="이름"
+							style={{ width: 196 }}
+							// value={name}
+						/>
+					</div>
+				</div>
+				<div className='input'>
+					<div className='title'>비밀번호</div>
+					<div>
+						<Input.Password
+							placeholder="비밀번호"
+							iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+						/>
+					</div>
+				</div>
+				<div className='input'>
+					<div className='title'>닉네임</div>
+					<div>
+						<Input
+							type='text'
+							placeholder="닉네임"
+							style={{ width: 196 }}
+							// value={nickname}
+						/>
+					</div>
+				</div>
+			</div>
+
+			<style jsx>{`
+			.mypage { margin: 100px auto; width: fit-content; }
+			.input { margin: 10px 0; display: flex; align-items: center; }
+			.title { width: 70px; }
+			`}</style>
+		</>
 	);
 };
 

@@ -4,12 +4,13 @@ import React from 'react';
 import { Modal, Button, Layout, Menu } from 'antd';
 const { Header, Content, Footer } = Layout;
 import { TeamOutlined, UserOutlined } from '@ant-design/icons';
+import router from 'next/router';
 
-function Wrap({ children }) {	
+function TopHeader() {	
 
 	return (
 		<>
-			<Layout>
+			<Layout style={{ position: 'sticky' }}>
 				<Header
 					style={{
 						background: 'white',
@@ -29,10 +30,10 @@ function Wrap({ children }) {
 							style={{ flex: 1 }}
 							theme="light"
 							mode="horizontal"
-							onClick={(e) => console.log(`${e.key}`)}
+							onClick={(e) => router.push(`/${e.key}`)}
 							items={[
 								{
-									key: 'list',
+									key: '',
 									icon: <TeamOutlined />,
 									label: '게시판'
 								},
@@ -43,20 +44,9 @@ function Wrap({ children }) {
 								},
 							]}
 						/>
-						<Button>로그아웃</Button>
+						<Button>로그인</Button>
 					</div>
 				</Header>
-				<Content
-                    style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        marginTop: 64
-                    }}
-                >
-                    <div className="content">
-                        {children}
-                    </div>
-                </Content>
 			</Layout>
 
 			< style jsx>{`
@@ -69,4 +59,4 @@ function Wrap({ children }) {
 	);
 };
 
-export default React.memo(Wrap);
+export default React.memo(TopHeader);

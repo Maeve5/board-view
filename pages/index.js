@@ -1,16 +1,16 @@
 import React from "react";
-import Wrap from "../components/global/Wrap";
+import TopHeader from "../components/global/TopHeader";
 import API from '../modules/api';
 import List from './board/index';
 
-function Home({ data }) {
+function Home({ success, result }) {
   return (
-    <Wrap>
+    <>
+      <TopHeader></TopHeader>
       <div>
-        <h1>자유게시판</h1>
-        <List data={data} />
+        <List success={success} result={result} />
       </div>
-    </Wrap>
+    </>
   )
 };
 
@@ -20,10 +20,10 @@ export default React.memo(Home);
 
 export const getServerSideProps = async () => {
   try {
-    const res = await API.get('/test')
-    console.log('res', typeof res.data);
-    const data = res.data;
-    return { props: { data } }
+    const res = await API.get('/v1/list');
+    console.log('res', res.data);
+    const { success, result } = await res.data;
+    return { props : { success, result }}
   } catch (err) {
     console.log('err', err);
   }
