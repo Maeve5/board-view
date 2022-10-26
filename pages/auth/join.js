@@ -4,8 +4,8 @@ import { Button, Input } from 'antd';
 import { EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons';
 
 const JoinPage = () => {
-  return (
-    <>
+	return (
+		<>
 			<TopHeader></TopHeader>
 			<div className='mypage'>
 				<div className='input'>
@@ -39,16 +39,19 @@ const JoinPage = () => {
 						/>
 					</div>
 				</div>
-        <Button>가입</Button>
+				<div className='button'>
+					<Button>가입</Button>
+				</div>
 			</div>
 
 			<style jsx>{`
 			.mypage { margin: 100px auto; width: fit-content; }
 			.input { margin: 10px 0; display: flex; align-items: center; }
 			.title { width: 70px; }
+			.button { display: flex; align-items: center; justify-content: center; }
 			`}</style>
 		</>
-  );
+	);
 };
 
 export default JoinPage;

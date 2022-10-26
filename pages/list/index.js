@@ -1,8 +1,9 @@
 import { Button, Pagination } from 'antd';
 import React from 'react';
 import { router } from 'next/router';
+import Link from 'next/link';
 
-const ListPage = ({ success, result }) => {
+function ListPage({ success, result }) {
 
 	return (
 		<>
@@ -28,7 +29,11 @@ const ListPage = ({ success, result }) => {
 								return (
 									<tr key={row.listkey} className='td'>
 										<td width='8%'>{row.listkey}</td>
-										<td width='55%'>{row.title}</td>
+										<td width='55%'>
+											<Link href={`/list/${row.listkey}`}>
+												<a style={{ color: 'black' }}>{row.title}</a>
+											</Link>
+										</td>
 										<td width='17%'>{row.name}</td>
 										<td width='20%'>{row.date} {row.time}</td>
 									</tr>

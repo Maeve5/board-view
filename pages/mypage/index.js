@@ -52,13 +52,16 @@ const MyPage = () => {
 						/>
 					</div>
 				</div>
-				<Button>수정</Button>
+				<div className='button'>
+					<Button>수정</Button>
+				</div>
 			</div>
 
 			<style jsx>{`
 			.mypage { margin: 100px auto; width: fit-content; }
 			.input { margin: 10px 0; display: flex; align-items: center; }
 			.title { width: 70px; }
+			.button { display: flex; align-items: center; justify-content: center; }
 			`}</style>
 		</>
 	);
