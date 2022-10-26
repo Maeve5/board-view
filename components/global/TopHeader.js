@@ -44,7 +44,8 @@ function TopHeader() {
 								},
 							]}
 						/>
-						<Button>로그인</Button>
+						<Button onClick={() => router.push('/auth/login')}>로그인</Button>
+						<Button onClick={() => router.push('/auth/join')}>회원가입</Button>
 					</div>
 				</Header>
 			</Layout>

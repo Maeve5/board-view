@@ -1,12 +1,16 @@
+import { Button, Pagination } from 'antd';
 import React from 'react';
-import { useMemo } from 'react';
+import { router } from 'next/router';
 
 const ListPage = ({ success, result }) => {
 
 	return (
 		<>
-			<div className=''>
-				<table className='table' border='1'>
+			<div className='list'>
+				<div className='button' style={{ float: 'right', margin: '0 20px 5px 0' }}>
+					<Button onClick={() => router.push('/list/insert')}>글쓰기</Button>
+				</div>
+				<table className='container'>
 					<thead>
 						<tr className='th'>
 							<th width='8%'>번호</th>
@@ -25,7 +29,7 @@ const ListPage = ({ success, result }) => {
 									<tr key={row.listkey} className='td'>
 										<td width='8%'>{row.listkey}</td>
 										<td width='55%'>{row.title}</td>
-										<td width='17%'>{row.nickname}</td>
+										<td width='17%'>{row.name}</td>
 										<td width='20%'>{row.date} {row.time}</td>
 									</tr>
 								)
@@ -33,18 +37,24 @@ const ListPage = ({ success, result }) => {
 						}
 					</tbody>
 				</table>
+				<div className='pagination'>
+					<Pagination defaultCurrent={1} total={50} />
+				</div>
 			</div>
 
 			<style jsx>{`
-			.table { border: 1px solid #eee; margin: 100px auto; max-width: 800px; width: 80%; }
+			.list { margin: 100px auto; max-width: 800px; width: 80%; }
+			.container { margin-bottom: 20px; max-width: 800px; width: 100%; }
+			thead, tbody { border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
 			.no-list { text-align: center; }
 			.td { text-align: center; }
+			.pagination { display: flex; align-items: center; justify-content: center; }
 			`}</style>
 		</>
 	);
 };
 
-export default ListPage;
+export default React.memo(ListPage);
 
 // export const getServerSideProps = async () => {
 // 	const init = await 

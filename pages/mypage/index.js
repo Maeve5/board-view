@@ -1,4 +1,4 @@
-import { Input } from 'antd';
+import { Button, Input } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import React, { useState } from 'react';
 import TopHeader from '../../components/global/TopHeader';
@@ -22,13 +22,13 @@ const MyPage = () => {
 			<TopHeader></TopHeader>
 			<div className='mypage'>
 				<div className='input'>
-					<div className='title'>이름</div>
+					<div className='title'>ID</div>
 					<div>
 						<Input
 							type='text'
-							placeholder="이름"
+							placeholder="아이디를 입력해 주세요."
 							style={{ width: 196 }}
-							// value={name}
+						// value={name}
 						/>
 					</div>
 				</div>
@@ -36,22 +36,23 @@ const MyPage = () => {
 					<div className='title'>비밀번호</div>
 					<div>
 						<Input.Password
-							placeholder="비밀번호"
+							placeholder="비밀번호를 입력해 주세요."
 							iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
 						/>
 					</div>
 				</div>
 				<div className='input'>
-					<div className='title'>닉네임</div>
+					<div className='title'>이름</div>
 					<div>
 						<Input
 							type='text'
-							placeholder="닉네임"
+							placeholder="이름을 입력해 주세요."
 							style={{ width: 196 }}
-							// value={nickname}
+						// value={nickname}
 						/>
 					</div>
 				</div>
+				<Button>수정</Button>
 			</div>
 
 			<style jsx>{`

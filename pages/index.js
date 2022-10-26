@@ -1,7 +1,7 @@
 import React from "react";
 import TopHeader from "../components/global/TopHeader";
 import API from '../modules/api';
-import List from './board/index';
+import List from './list/index';
 
 function Home({ success, result }) {
   return (

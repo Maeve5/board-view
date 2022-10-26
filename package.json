@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@actbase/react-daum-postcode": "^1.0.4",
     "@ant-design/icons": "^4.7.0",
+    "@types/react": "^18.0.23",
     "antd": "^4.23.0",
     "axios": "^0.27.2",
     "moment": "^2.29.4",
