@@ -1,5 +1,5 @@
 import { Button, Pagination } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import { router } from 'next/router';
 import Link from 'next/link';
 import TopHeader from '../../components/global/TopHeader';
@@ -29,12 +29,12 @@ function ListPage({ result }) {
 							<tr>
 								<td colSpan='4' height='100' className='no-list'>등록된 게시글이 없습니다.</td>
 							</tr> :
-							result.map((row) => {
+							result.map((row, idx) => {
 								return (
-									<tr key={row.listkey} className='td'>
-										<td width='8%'>{row.listkey}</td>
+									<tr key={row.rowKey} className='td'>
+										<td width='8%'>{idx+1}</td>
 										<td width='55%'>
-											<Link href={`/list/${row.listkey}`}>
+											<Link href={`/list/${row.rowKey}`}>
 												<a style={{ color: 'black' }}>{row.title}</a>
 											</Link>
 										</td>
@@ -68,7 +68,7 @@ export default React.memo(ListPage);
 export const getServerSideProps = async () => {
 	try {
 		const res = await API.get('/v1/list');
-		console.log('res', res.data);
+		// console.log('res', res.data);
 		const { result } = await res.data;
 		return { props : { result }}
 	} catch (err) {

@@ -1,18 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TopHeader from '../../components/global/TopHeader';
 import API from '../../modules/api';
-import { Input, Button } from 'antd';
+import { Input, Button, Divider } from 'antd';
 import { router } from 'next/router';
 import ListInput from '../../components/list/Input';
+import Update from '../../components/list/Update';
 const { TextArea } = Input;
 
-function listKey({ success, result }) {
-	console.log('result', result);
+function ListKey({ success, result, path }) {
+	// console.log('result', result);
+	// console.log('path', path);
+
+	// const [title, setTitle] = useState(result.title);
+	// const [description, setDescription] = useState(result.description);
+	// const [readOnly, setReadOnly] = useState(true);
+
+	// 조회
+
+	// 수정
+	const SendQuery = () => {
+		// console.log('result', result);
+		router.push({
+			pathname: '/list/update',
+			query: { title: result.title, description: result.description, path: path },
+		}, `/list/update/${path}`);
+	};
+
+	// 삭제
+	const onDelete = () => {
+		console.log(path);
+	}
+
 	return (
 		<>
 			<TopHeader></TopHeader>
 			<div className='insertpage'>
-				<div className='input'>
+				{/* <div className='input'>
 					<div className='title'>제목</div>
 					<div className='text'>
 						<Input type='text' placeholder='제목을 입력해 주세요.' style={{ display: 'block' }} value={result.title} readOnly />
@@ -23,34 +46,64 @@ function listKey({ success, result }) {
 					<div className='text'>
 						<TextArea rows={4} placeholder='내용을 입력해 주세요.' value={result.description} readOnly />
 					</div>
-				</div>
+				</div> */}
 				{/* <ListInput result={result} /> */}
+				<div className='item'>
+					<div className='title'>제목</div>
+					{/* <Divider type="vertical" style={{ borderColor: '#999', height: '2vh' }} /> */}
+					<div className='input'>
+						<Input
+							type='text'
+							placeholder='제목을 입력해 주세요.'
+							style={{ display: 'block' }}
+							value={result.title}
+							readOnly={true}
+							bordered={false}
+						/>
+					</div>
+				</div>
+				<div className='item'>
+					<div className='title'>내용</div>
+					{/* <Divider type="vertical" style={{ borderColor: '#999', height: '100' }} /> */}
+					<div className='input'>
+						<TextArea
+							rows={4}
+							placeholder='내용을 입력해 주세요.'
+							style={{ resize: 'none' }}
+							value={result.description}
+							readOnly={true}
+							bordered={false}
+						/>
+					</div>
+				</div>
 				<div className='button'>
-					<Button onClick={() => router.push('/list/update')}>수정</Button>
-					<Button>삭제</Button>
+					<Button
+						onClick={SendQuery}>수정</Button>
+					<Button onClick={() => onDelete()}>삭제</Button>
 				</div>
 			</div>
 
 			<style jsx>{`
 			.insertpage { margin: 100px auto; max-width: 800px; width: 80%; }
-			.input { margin: 10px 0; display: flex; align-items: center; }
+			.item { margin: 10px 0; display: flex; align-items: center; justify-content: center; border-top: 1px solid #aaa; border-bottom: 1px solid #aaa; }
 			.title { flex: 1; text-align: center; }
-			.text { flex: 8; }
+			.input { flex: 8; }
 			.button { display: flex; align-items: center; justify-content: center; }
 			`}</style>
 		</>
 	);
 };
 
-export default React.memo(listKey);
+export default React.memo(ListKey);
 
 export const getServerSideProps = async ({ params }) => {
 	try {
-		console.log('params', params.listKey );
 		const res = await API.get(`/v1/list/${params.listKey}`);
-		console.log('res', res.data);
+		console.log('params', params);
 		const { success, result } = await res.data;
-		return { props : { success, result }}
+		let path = params.listKey;
+		// console.log('path', path );
+		return { props: { success, result, path } }
 	}
 	catch (err) {
 		console.log('err', err);
