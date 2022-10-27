@@ -33,12 +33,12 @@ function TopHeader() {
 							onClick={(e) => router.push(`/${e.key}`)}
 							items={[
 								{
-									key: '',
+									key: 'list',
 									icon: <TeamOutlined />,
 									label: '게시판'
 								},
 								{
-									key: 'mypage',
+									key: 'my',
 									icon: <UserOutlined />,
 									label: '마이페이지'
 								},

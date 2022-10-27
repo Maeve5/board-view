@@ -2,6 +2,8 @@ import React from 'react';
 import TopHeader from '../../components/global/TopHeader';
 import API from '../../modules/api';
 import { Input, Button } from 'antd';
+import { router } from 'next/router';
+import ListInput from '../../components/list/Input';
 const { TextArea } = Input;
 
 function listKey({ success, result }) {
@@ -22,8 +24,9 @@ function listKey({ success, result }) {
 						<TextArea rows={4} placeholder='내용을 입력해 주세요.' value={result.description} readOnly />
 					</div>
 				</div>
+				{/* <ListInput result={result} /> */}
 				<div className='button'>
-					<Button>수정</Button>
+					<Button onClick={() => router.push('/list/update')}>수정</Button>
 					<Button>삭제</Button>
 				</div>
 			</div>

@@ -2,11 +2,15 @@ import { Button, Pagination } from 'antd';
 import React from 'react';
 import { router } from 'next/router';
 import Link from 'next/link';
+import TopHeader from '../../components/global/TopHeader';
+import API from '../../modules/api';
 
-function ListPage({ success, result }) {
+function ListPage({ result }) {
 
+	console.log('result', result);
 	return (
 		<>
+			<TopHeader></TopHeader>
 			<div className='list'>
 				<div className='button' style={{ float: 'right', margin: '0 20px 5px 0' }}>
 					<Button onClick={() => router.push('/list/insert')}>글쓰기</Button>
@@ -61,6 +65,13 @@ function ListPage({ success, result }) {
 
 export default React.memo(ListPage);
 
-// export const getServerSideProps = async () => {
-// 	const init = await 
-// }
+export const getServerSideProps = async () => {
+	try {
+		const res = await API.get('/v1/list');
+		console.log('res', res.data);
+		const { result } = await res.data;
+		return { props : { result }}
+	} catch (err) {
+		console.log('err', err);
+	}
+}
