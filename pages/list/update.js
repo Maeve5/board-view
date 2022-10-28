@@ -8,18 +8,26 @@ const { TextArea } = Input;
 function Update() {
 	
 	const query = useRouter().query;
+	// query: { title: result.title, description: result.description, listKey: listKey }
 	
 	const [title, setTitle] = useState(query.title);
 	const [description, setDescription] = useState(query.description);
 	
 	const onUpdate = useCallback (async () => {
+
+		if ( !title || !description ) {
+			alert('빈칸이 있습니다.');
+			return false;
+		}
+
 		try {
 			await API.patch(`/v1/list/${query.listKey}`, {
 				title: title,
 				description: description
 			});
 			router.push(`/list/${query.listKey}`);
-		} catch (error) {
+		}
+		catch (error) {
 			console.log('onUpdate 에러', error);
 		}
 	}, [title, description]);

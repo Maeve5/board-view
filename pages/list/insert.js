@@ -12,6 +12,12 @@ function InsertPage() {
 	
 	// 데이터 추가
 	const onInsert = useCallback (async () => {
+
+		if ( !title || !description ) {
+			alert('빈칸이 있습니다.');
+			return false;
+		}
+
 		try {
 			await API.post(`/v1/list`, {
 				title: title,
@@ -20,7 +26,8 @@ function InsertPage() {
 				userKey: '1'
 			});
 			router.push('/list');
-		} catch (error) {
+		}
+		catch (error) {
 			console.log('onInsert 에러', error);
 		}
 	}, [title, description]);
