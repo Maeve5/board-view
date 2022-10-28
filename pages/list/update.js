@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { router, useRouter } from 'next/router';
 import TopHeader from '../../components/global/TopHeader';
 import API from '../../modules/api';
-import { Input, Button, Divider } from 'antd';
+import { Input, Button } from 'antd';
 const { TextArea } = Input;
 
 function Update() {
@@ -14,15 +14,13 @@ function Update() {
 	
 	const onUpdate = useCallback (async () => {
 		try {
-			const res = await API.patch(`/v1/list/${query.patchKey}`, {
+			await API.patch(`/v1/list/${query.listKey}`, {
 				title: title,
 				description: description
 			});
-			if (res.status === 200) {
-			router.push(`/list/${query.patchKey}`);
-			}
+			router.push(`/list/${query.listKey}`);
 		} catch (error) {
-			console.log(error);
+			console.log('onUpdate 에러', error);
 		}
 	}, [title, description]);
 

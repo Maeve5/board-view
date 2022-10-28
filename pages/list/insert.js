@@ -1,36 +1,34 @@
-import { Input, Button } from 'antd';
 import React, { useState, useCallback } from 'react';
-import { router, useRouter } from 'next/router';
+import { router } from 'next/router';
 import TopHeader from '../../components/global/TopHeader';
 import API from '../../modules/api';
+import { Input, Button } from 'antd';
 const { TextArea } = Input;
 
 function InsertPage() {
 
-	// const listKey = useRouter().query.listKey;
-
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
 	
-	const onInsert = useCallback( async () => {
+	// 데이터 추가
+	const onInsert = useCallback (async () => {
 		try {
-			const res = await API.post(`/v1/list`, {
+			await API.post(`/v1/list`, {
 				title: title,
 				description: description,
 				name: 'name1',
 				userKey: '1'
 			});
-			if (res.status === 200) {
 			router.push('/list');
-			}
 		} catch (error) {
-			console.log(error);
+			console.log('onInsert 에러', error);
 		}
 	}, [title, description]);
 
 	return (
 		<>
 			<TopHeader />
+
 			<div className='insertpage'>
 				<div className='item'>
 					<div className='title'>제목</div>
@@ -56,6 +54,7 @@ function InsertPage() {
 						/>
 					</div>
 				</div>
+
 				<div className='button'>
 					<Button onClick={onInsert}>게시</Button>
 				</div>

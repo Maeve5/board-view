@@ -1,27 +1,23 @@
-import { Button, Pagination } from 'antd';
 import React from 'react';
-import { router } from 'next/router';
 import Link from 'next/link';
+import { router } from 'next/router';
 import TopHeader from '../../components/global/TopHeader';
 import API from '../../modules/api';
+import { Button, Pagination } from 'antd';
 
 function ListPage({ result }) {
 
-	const SendQuery = () => {
-		router.push({
-			pathname: '/list/insert',
-			query: { listKey: result.length+1 }
-		});
-	};
-
-	console.log('result', result);
 	return (
 		<>
+			{/* 헤더 */}
 			<TopHeader />
+
 			<div className='list'>
 				<div className='button' style={{ float: 'right', margin: '0 20px 5px 0' }}>
-					<Button onClick={SendQuery}>글쓰기</Button>
+					<Button onClick={() => router.push('/list/insert')}>글쓰기</Button>
 				</div>
+
+				{/* 게시글 목록 */}
 				<table className='container'>
 					<thead>
 						<tr className='th'>
@@ -53,6 +49,7 @@ function ListPage({ result }) {
 						}
 					</tbody>
 				</table>
+
 				<div className='pagination'>
 					<Pagination defaultCurrent={1} total={50} />
 				</div>
@@ -75,10 +72,10 @@ export default React.memo(ListPage);
 export const getServerSideProps = async () => {
 	try {
 		const res = await API.get('/v1/list');
-		// console.log('res', res.data);
 		const { result } = await res.data;
 		return { props : { result }}
-	} catch (err) {
+	}
+	catch (err) {
 		console.log('err', err);
 	}
 }

@@ -1,10 +1,8 @@
 import React from 'react';
-
-// 컴포넌트
-import { Modal, Button, Layout, Menu } from 'antd';
-const { Header, Content, Footer } = Layout;
-import { TeamOutlined, UserOutlined } from '@ant-design/icons';
 import router from 'next/router';
+import { Button, Layout, Menu } from 'antd';
+import { TeamOutlined, UserOutlined } from '@ant-design/icons';
+const { Header, Content, Footer } = Layout;
 
 function TopHeader() {	
 

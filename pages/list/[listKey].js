@@ -1,54 +1,38 @@
 import React, { useCallback } from 'react';
+import { router } from 'next/router';
 import TopHeader from '../../components/global/TopHeader';
 import API from '../../modules/api';
-import { Input, Button, Divider } from 'antd';
-import { router } from 'next/router';
-import ListInput from '../../components/list/Input';
-import Update from '../../components/list/Update';
+import { Input, Button } from 'antd';
 const { TextArea } = Input;
 
-function ListKey({ success, result, path }) {
+function ListKey({ success, result, listKey }) {
 
-	// 수정
-	const SendQuery = () => {
+	// 수정 페이지 이동
+	const SendQuery = useCallback (() => {
 		router.push({
 			pathname: '/list/update',
-			query: { title: result.title, description: result.description, patchKey: path },
-		}, `/list/update/${path}`);
-	};
+			query: { title: result.title, description: result.description, listKey: listKey },
+		}, `/list/update/${listKey}`);
+	}, []);
 
 	// 삭제
 	const onDelete = useCallback (async () => {
 		try {
-			const res = await API.delete(`/v1/list/${path}`);
-			if (res.status === 200) {
+			await API.delete(`/v1/list/${listKey}`);
 			router.push(`/list`);
-			}
-		} catch (error) {
-			console.log(error);
+		}
+		catch (error) {
+			console.log('onDelete 에러', error);
 		}
 	}, []);
 
 	return (
 		<>
 			<TopHeader></TopHeader>
+
 			<div className='insertpage'>
-				{/* <div className='input'>
-					<div className='title'>제목</div>
-					<div className='text'>
-						<Input type='text' placeholder='제목을 입력해 주세요.' style={{ display: 'block' }} value={result.title} readOnly />
-					</div>
-				</div>
-				<div className='input'>
-					<div className='title'>내용</div>
-					<div className='text'>
-						<TextArea rows={4} placeholder='내용을 입력해 주세요.' value={result.description} readOnly />
-					</div>
-				</div> */}
-				{/* <ListInput result={result} /> */}
 				<div className='item'>
 					<div className='title'>제목</div>
-					{/* <Divider type="vertical" style={{ borderColor: '#999', height: '2vh' }} /> */}
 					<div className='input'>
 						<Input
 							type='text'
@@ -62,7 +46,6 @@ function ListKey({ success, result, path }) {
 				</div>
 				<div className='item'>
 					<div className='title'>내용</div>
-					{/* <Divider type="vertical" style={{ borderColor: '#999', height: '100' }} /> */}
 					<div className='input'>
 						<TextArea
 							rows={4}
@@ -74,6 +57,7 @@ function ListKey({ success, result, path }) {
 						/>
 					</div>
 				</div>
+
 				<div className='button'>
 					<Button
 						onClick={SendQuery}>수정</Button>
@@ -97,11 +81,9 @@ export default React.memo(ListKey);
 export const getServerSideProps = async ({ params }) => {
 	try {
 		const res = await API.get(`/v1/list/${params.listKey}`);
-		console.log('params', params);
 		const { success, result } = await res.data;
-		let path = params.listKey;
-		// console.log('path', path );
-		return { props: { success, result, path } }
+		let listKey = params.listKey;
+		return { props: { success, result, listKey } }
 	}
 	catch (err) {
 		console.log('err', err);
