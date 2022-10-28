@@ -1,9 +1,38 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
+import { router } from 'next/router';
 import TopHeader from '../../components/global/TopHeader';
 import { Button, Input } from 'antd';
 import { EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons';
+import API from '../../modules/api';
 
-const JoinPage = () => {
+function JoinPage() {
+
+	const [id, setId] = useState('');
+	const [password, setPassword] = useState('');
+	const [name, setName] = useState('');
+
+	const onJoin = useCallback(async () => {
+
+		if (!id || !password || !name) {
+			alert('빈 칸이 있습니다.');
+			return false;
+		}
+
+		try {
+			await API.post('/v1/user', {
+				id: id,
+				password: password,
+				name: name,
+			})
+			alert('가입되었습니다.');
+			router.push('/auth/login');
+		}
+		catch (error) {
+			console.log('onJoin 에러', error);
+		}
+
+	}, [id, password, name]);
+
 	return (
 		<>
 			<TopHeader />
@@ -16,6 +45,8 @@ const JoinPage = () => {
 							type='text'
 							placeholder="아이디를 입력해 주세요."
 							style={{ width: 196 }}
+							value={id}
+							onChange={(e) => setId(e.target.value)}
 						/>
 					</div>
 				</div>
@@ -25,6 +56,8 @@ const JoinPage = () => {
 						<Input.Password
 							placeholder="비밀번호를 입력해 주세요."
 							iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
 						/>
 					</div>
 				</div>
@@ -35,12 +68,14 @@ const JoinPage = () => {
 							type='text'
 							placeholder="이름을 입력해 주세요."
 							style={{ width: 196 }}
+							value={name}
+							onChange={(e) => setName(e.target.value)}
 						/>
 					</div>
 				</div>
 
 				<div className='button'>
-					<Button>가입</Button>
+					<Button onClick={onJoin}>가입</Button>
 				</div>
 			</div>
 
@@ -54,4 +89,4 @@ const JoinPage = () => {
 	);
 };
 
-export default JoinPage;
+export default React.memo(JoinPage);

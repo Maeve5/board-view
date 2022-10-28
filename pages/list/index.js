@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { router } from 'next/router';
+import Error from '../404';
 import TopHeader from '../../components/global/TopHeader';
 import API from '../../modules/api';
 import { Button, Pagination } from 'antd';
@@ -42,7 +43,7 @@ function ListPage({ result }) {
 											</Link>
 										</td>
 										<td width='17%'>{row.name}</td>
-										<td width='20%'>{row.date} {row.time}</td>
+										<td width='20%'>{row.time}</td>
 									</tr>
 								)
 							})
@@ -77,5 +78,6 @@ export const getServerSideProps = async () => {
 	}
 	catch (err) {
 		console.log('err', err);
+		return { props : { result: [] }}
 	}
 }

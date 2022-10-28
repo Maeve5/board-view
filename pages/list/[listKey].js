@@ -81,11 +81,16 @@ export default React.memo(ListKey);
 export const getServerSideProps = async ({ params }) => {
 	try {
 		const res = await API.get(`/v1/list/${params.listKey}`);
+
+		// if ()
 		const { success, result } = await res.data;
+		console.log('status', res.status);
 		let listKey = params.listKey;
 		return { props: { success, result, listKey } }
 	}
 	catch (err) {
-		console.log('err', err);
+		console.log('err', err.response.data);
+		// console.log('result', message);
+		return { props : { result: [null] }}
 	}
 }

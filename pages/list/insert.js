@@ -9,11 +9,11 @@ function InsertPage() {
 
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
-	
-	// 데이터 추가
-	const onInsert = useCallback (async () => {
 
-		if ( !title || !description ) {
+	// 데이터 추가
+	const onInsert = useCallback(async () => {
+
+		if (!title || !description) {
 			alert('빈칸이 있습니다.');
 			return false;
 		}
@@ -22,8 +22,8 @@ function InsertPage() {
 			await API.post(`/v1/list`, {
 				title: title,
 				description: description,
-				name: 'name1',
-				userKey: '1'
+				// name: 'name1',
+				userKey: '1',
 			});
 			router.push('/list');
 		}
