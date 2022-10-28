@@ -1,5 +1,5 @@
 import { Button, Pagination } from 'antd';
-import React, { useState } from 'react';
+import React from 'react';
 import { router } from 'next/router';
 import Link from 'next/link';
 import TopHeader from '../../components/global/TopHeader';
@@ -7,13 +7,20 @@ import API from '../../modules/api';
 
 function ListPage({ result }) {
 
+	const SendQuery = () => {
+		router.push({
+			pathname: '/list/insert',
+			query: { listKey: result.length+1 }
+		});
+	};
+
 	console.log('result', result);
 	return (
 		<>
-			<TopHeader></TopHeader>
+			<TopHeader />
 			<div className='list'>
 				<div className='button' style={{ float: 'right', margin: '0 20px 5px 0' }}>
-					<Button onClick={() => router.push('/list/insert')}>글쓰기</Button>
+					<Button onClick={SendQuery}>글쓰기</Button>
 				</div>
 				<table className='container'>
 					<thead>

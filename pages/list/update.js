@@ -1,24 +1,30 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router'
+import React, { useState, useCallback } from 'react';
+import { router, useRouter } from 'next/router';
 import TopHeader from '../../components/global/TopHeader';
+import API from '../../modules/api';
 import { Input, Button, Divider } from 'antd';
 const { TextArea } = Input;
 
 function Update() {
 	
-	const router = useRouter().query;
-	console.log('query', router);
+	const query = useRouter().query;
 	
-	const [title, setTitle] = useState(router.title);
-	const [description, setDescription] = useState(router.description);
+	const [title, setTitle] = useState(query.title);
+	const [description, setDescription] = useState(query.description);
 	
-	const onUpdate = async () => {
-		await API.patch(`/v1/list/update/${path}`, {
-			title: title,
-			description: description
-		});
-		console.log('수정', result);
-	}
+	const onUpdate = useCallback (async () => {
+		try {
+			const res = await API.patch(`/v1/list/${query.patchKey}`, {
+				title: title,
+				description: description
+			});
+			if (res.status === 200) {
+			router.push(`/list/${query.patchKey}`);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}, [title, description]);
 
 	return (
 		<>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback } from 'react';
 import TopHeader from '../../components/global/TopHeader';
 import API from '../../modules/api';
 import { Input, Button, Divider } from 'antd';
@@ -8,28 +8,26 @@ import Update from '../../components/list/Update';
 const { TextArea } = Input;
 
 function ListKey({ success, result, path }) {
-	// console.log('result', result);
-	// console.log('path', path);
-
-	// const [title, setTitle] = useState(result.title);
-	// const [description, setDescription] = useState(result.description);
-	// const [readOnly, setReadOnly] = useState(true);
-
-	// 조회
 
 	// 수정
 	const SendQuery = () => {
-		// console.log('result', result);
 		router.push({
 			pathname: '/list/update',
-			query: { title: result.title, description: result.description, path: path },
+			query: { title: result.title, description: result.description, patchKey: path },
 		}, `/list/update/${path}`);
 	};
 
 	// 삭제
-	const onDelete = () => {
-		console.log(path);
-	}
+	const onDelete = useCallback (async () => {
+		try {
+			const res = await API.delete(`/v1/list/${path}`);
+			if (res.status === 200) {
+			router.push(`/list`);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}, []);
 
 	return (
 		<>
@@ -79,7 +77,7 @@ function ListKey({ success, result, path }) {
 				<div className='button'>
 					<Button
 						onClick={SendQuery}>수정</Button>
-					<Button onClick={() => onDelete()}>삭제</Button>
+					<Button onClick={onDelete}>삭제</Button>
 				</div>
 			</div>
 
