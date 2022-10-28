@@ -1,7 +1,6 @@
 import React from 'react';
 import router from 'next/router';
 import { Button, Layout, Menu } from 'antd';
-import { TeamOutlined, UserOutlined } from '@ant-design/icons';
 const { Header, Content, Footer } = Layout;
 
 function TopHeader() {	
@@ -32,12 +31,10 @@ function TopHeader() {
 							items={[
 								{
 									key: 'list',
-									icon: <TeamOutlined />,
 									label: '게시판'
 								},
 								{
 									key: 'my',
-									icon: <UserOutlined />,
 									label: '마이페이지'
 								},
 							]}
