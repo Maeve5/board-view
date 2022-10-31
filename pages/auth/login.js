@@ -1,6 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { router } from 'next/router';
+import { useSetRecoilState } from 'recoil';
+import loginState from '../../atom/loginState';
 import TopHeader from '../../components/global/TopHeader';
+import API from '../../modules/api';
 import { Button, Input } from 'antd';
 import { EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons';
 
@@ -8,6 +11,7 @@ function LoginPage() {
 
 	const [id, setId] = useState('');
 	const [password, setPassword] = useState('');
+	const setIsLogin = useSetRecoilState(loginState);
 
 	const onLogin = useCallback(async () => {
 
@@ -16,15 +20,27 @@ function LoginPage() {
 			return false;
 		}
 
+		// 로그인
 		try {
-			await API.post('/v1/auth', {
+			const res = await API.post('/v1/auth/login', {
 				id: id,
 				password: password,
 			})
-			router.push('/list');
+			console.log('res', res);
+			// 로그인 성공
+			if (res.data.success) {
+				setIsLogin(true);
+				alert('로그인 성공');
+				router.push('/list');
+			}
+			// 로그인 실패
+			else {
+				alert(res.data.message);
+			}
 		}
 		catch (error) {
 			console.log('onLogin 에러', error);
+			alert(error.response.data.message);
 		}
 
 	}, [id, password]);
@@ -34,6 +50,7 @@ function LoginPage() {
 			<TopHeader />
 
 			<div className='mypage'>
+				<form ></form>
 				<div className='item'>
 					<div className='title'>ID</div>
 					<div>

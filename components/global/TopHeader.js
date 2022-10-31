@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import router from 'next/router';
+import { useRecoilState } from 'recoil';
+import loginState from '../../atom/loginState';
 import { Button, Layout, Menu } from 'antd';
 const { Header, Content, Footer } = Layout;
 
-function TopHeader() {	
+function TopHeader() {
+
+	const [isLogin, setIsLogin] = useRecoilState(loginState);
+
+	const onLogout = useCallback(async () => {
+		setIsLogin(false);
+		router.push('/list');
+	}, [isLogin]);
 
 	return (
 		<>
-			<Layout style={{ position: 'sticky' }}>
+			<Layout style={{ position: 'sticky', zIndex: 100 }}>
 				<Header
 					style={{
 						background: 'white',
@@ -33,14 +42,19 @@ function TopHeader() {
 									key: 'list',
 									label: '게시판'
 								},
+								isLogin &&
 								{
 									key: 'my',
 									label: '마이페이지'
 								},
 							]}
 						/>
-						<Button onClick={() => router.push('/auth/login')}>로그인</Button>
-						<Button onClick={() => router.push('/auth/join')}>회원가입</Button>
+						{isLogin ? 
+							<Button onClick={onLogout}>로그아웃</Button>
+						:<>
+							<Button onClick={() => router.push('/auth/login')}>로그인</Button>
+							<Button onClick={() => router.push('/auth/join')}>회원가입</Button>
+						</>}
 					</div>
 				</Header>
 			</Layout>

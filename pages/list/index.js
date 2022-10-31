@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { router } from 'next/router';
 import Error from '../404';
@@ -7,6 +7,14 @@ import API from '../../modules/api';
 import { Button, Pagination } from 'antd';
 
 function ListPage({ result }) {
+
+	const [page, setPage] = useState(1);
+	const [pageSize, setPageSize] = useState(5);
+
+	// let listArr = result.slice((page-1)*pageSize, pageSize);
+	// console.log('listArr', listArr);
+	// console.log('result', result);
+
 
 	return (
 		<>
@@ -52,7 +60,7 @@ function ListPage({ result }) {
 				</table>
 
 				<div className='pagination'>
-					<Pagination defaultCurrent={1} total={50} />
+					<Pagination defaultCurrent={page} onChange={(e) => setPage(e)} pageSize={pageSize} total={result.length} />
 				</div>
 			</div>
 

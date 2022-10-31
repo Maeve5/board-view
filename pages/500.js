@@ -1,5 +1,4 @@
 import React from "react";
-import { router } from "next/router";
 
 function Custom500() {
 	return (

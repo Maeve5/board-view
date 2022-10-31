@@ -7,6 +7,12 @@ const { TextArea } = Input;
 
 function ListKey({ success, result, listKey }) {
 
+	// 존재하지 않는 페이지
+	// if (!success) {
+	// 	alert('존재하지 않는 게시물입니다.');
+	// 	return false;
+	// }
+
 	// 수정 페이지 이동
 	const SendQuery = useCallback (() => {
 		router.push({
@@ -17,6 +23,7 @@ function ListKey({ success, result, listKey }) {
 
 	// 삭제
 	const onDelete = useCallback (async () => {
+		
 		try {
 			await API.delete(`/v1/list/${listKey}`);
 			router.push(`/list`);
@@ -28,7 +35,7 @@ function ListKey({ success, result, listKey }) {
 
 	return (
 		<>
-			<TopHeader></TopHeader>
+			<TopHeader />
 
 			<div className='insertpage'>
 				<div className='item'>
@@ -38,7 +45,7 @@ function ListKey({ success, result, listKey }) {
 							type='text'
 							placeholder='제목을 입력해 주세요.'
 							style={{ display: 'block' }}
-							value={result.title}
+							value={result ? result.title : null}
 							readOnly={true}
 							bordered={false}
 						/>
@@ -51,7 +58,7 @@ function ListKey({ success, result, listKey }) {
 							rows={4}
 							placeholder='내용을 입력해 주세요.'
 							style={{ resize: 'none' }}
-							value={result.description}
+							value={result ? result.description : null}
 							readOnly={true}
 							bordered={false}
 						/>
@@ -84,13 +91,13 @@ export const getServerSideProps = async ({ params }) => {
 
 		// if ()
 		const { success, result } = await res.data;
-		console.log('status', res.status);
+		console.log('result', res.data.result);
 		let listKey = params.listKey;
 		return { props: { success, result, listKey } }
 	}
 	catch (err) {
 		console.log('err', err.response.data);
-		// console.log('result', message);
-		return { props : { result: [null] }}
+		// console.log('result', result);
+		return { props : { success: false }}
 	}
 }
