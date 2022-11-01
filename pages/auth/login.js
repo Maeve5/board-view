@@ -26,19 +26,22 @@ function LoginPage() {
 				id: id,
 				password: password,
 			})
-			console.log('res', res);
+			console.log('data', res.data);
 			// 로그인 성공
 			if (res.data.success) {
 				setIsLogin(true);
 				alert('로그인 성공');
-				router.push('/list');
+				console.log('res', res);
+				// router.push('/list');
 			}
 			// 로그인 실패
 			else {
+				// if (!result2)
 				alert(res.data.message);
 			}
 		}
 		catch (error) {
+			// if (result.length === 0)
 			console.log('onLogin 에러', error);
 			alert(error.response.data.message);
 		}
