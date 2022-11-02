@@ -91,7 +91,7 @@ export const getServerSideProps = async ({ params }) => {
 
 		// if ()
 		const { success, result } = await res.data;
-		console.log('result', res.data.result);
+		console.log('result', res.data);
 		let listKey = params.listKey;
 		return { props: { success, result, listKey } }
 	}

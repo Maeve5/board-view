@@ -29,7 +29,7 @@ function ListPage({ user, result }) {
 	return (
 		<>
 			{/* 헤더 */}
-			<TopHeader />
+			<TopHeader user={user} />
 
 			<div className='list'>
 				<div className='button' style={{ float: 'right', margin: '0 20px 10px 0' }}>
@@ -54,7 +54,8 @@ function ListPage({ user, result }) {
 
 export default React.memo(ListPage);
 
-export const getServerSideProps = async ({ req }) => {
+export const getServerSideProps = async ({ req, res, path }) => {
+	console.log('url', req);
 	try {
 		// const res = await API.get('/v1/list');
 		const res = await API.get('/v1/list', {
@@ -67,7 +68,7 @@ export const getServerSideProps = async ({ req }) => {
 			withCredentials: true
 		});
 		const { user, result } = await res.data;
-		console.log(res.data);
+		// console.log(res.data);
 		return { props: { user, result } }
 	}
 	catch (err) {

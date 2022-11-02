@@ -6,13 +6,13 @@ import { Button, Layout, Menu } from 'antd';
 import API from '../../modules/api';
 const { Header, Content, Footer } = Layout;
 
-function TopHeader() {
+function TopHeader({ path, user }) {
 
 	const [isLogin, setIsLogin] = useRecoilState(loginState);
 
 	const onLogout = useCallback(async () => {
 		setIsLogin(false);
-		// await API.post('/v1/auth/logout')
+		await API.post('/v1/auth/logout', {user: user});
 		router.push('/list');
 	}, [isLogin]);
 
