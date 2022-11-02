@@ -96,8 +96,8 @@ export const getServerSideProps = async ({ params }) => {
 		return { props: { success, result, listKey } }
 	}
 	catch (err) {
-		console.log('err', err.response.data);
-		// console.log('result', result);
+		// console.log('err', err.response.data);
+		console.log('err', err);
 		return { props : { success: false }}
 	}
 }

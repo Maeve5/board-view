@@ -3,6 +3,7 @@ import router from 'next/router';
 import { useRecoilState } from 'recoil';
 import loginState from '../../atom/loginState';
 import { Button, Layout, Menu } from 'antd';
+import API from '../../modules/api';
 const { Header, Content, Footer } = Layout;
 
 function TopHeader() {
@@ -11,6 +12,7 @@ function TopHeader() {
 
 	const onLogout = useCallback(async () => {
 		setIsLogin(false);
+		// await API.post('/v1/auth/logout')
 		router.push('/list');
 	}, [isLogin]);
 
@@ -42,19 +44,23 @@ function TopHeader() {
 									key: 'list',
 									label: '게시판'
 								},
-								isLogin &&
+								isLogin ?
 								{
 									key: 'my',
 									label: '마이페이지'
-								},
+								} : null,
 							]}
 						/>
 						{isLogin ? 
-							<Button onClick={onLogout}>로그아웃</Button>
-						:<>
-							<Button onClick={() => router.push('/auth/login')}>로그인</Button>
-							<Button onClick={() => router.push('/auth/join')}>회원가입</Button>
-						</>}
+							<>
+								<div className='name'>님</div>
+								<Button onClick={onLogout}>로그아웃</Button>
+							</>
+							: <>
+								<Button onClick={() => router.push('/auth/login')}>로그인</Button>
+								<Button onClick={() => router.push('/auth/join')}>회원가입</Button>
+							</>
+						}
 					</div>
 				</Header>
 			</Layout>
@@ -64,6 +70,7 @@ function TopHeader() {
             .logo {margin-right: 40px;}
             .logo p {margin: 0; font-size: 16px;}
 
+			.name { margin-right: 20px; }
             `}</style>
 		</>
 	);

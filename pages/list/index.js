@@ -5,11 +5,7 @@ import API from '../../modules/api';
 import { Button, Pagination } from 'antd';
 import Posts from '../../components/list/Posts';
 
-function ListPage({ result }) {
-
-	// let listArr = result.slice((page-1)*pageSize, pageSize);
-	// console.log('listArr', listArr);
-	// console.log('result', result);
+function ListPage({ user, result }) {
 
 	const [posts, setPosts] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -29,7 +25,6 @@ function ListPage({ result }) {
 	const lastPost = page * pageSize;
 	const firstPost = lastPost - pageSize;
 	const postArr = posts.slice(firstPost, lastPost);
-
 
 	return (
 		<>
@@ -59,15 +54,24 @@ function ListPage({ result }) {
 
 export default React.memo(ListPage);
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async ({ req }) => {
 	try {
-		const res = await API.get('/v1/list');
-		console.log('res', res);
-		const { result } = await res.data;
-		return { props : { result }}
+		// const res = await API.get('/v1/list');
+		const res = await API.get('/v1/list', {
+			headers:
+			{
+				'Authorization': req.cookies.cookie ? req.cookies.cookie : '',
+				'Accept': 'Application/json',
+				'Content-type': 'Application/json',
+			},
+			withCredentials: true
+		});
+		const { user, result } = await res.data;
+		console.log(res.data);
+		return { props: { user, result } }
 	}
 	catch (err) {
 		console.log('err', err);
-		return { props : { result: [] }}
+		return { props: { result: [] } }
 	}
 }

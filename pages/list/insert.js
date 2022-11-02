@@ -79,3 +79,20 @@ function InsertPage() {
 }
 
 export default React.memo(InsertPage);
+
+// export const getServerSideProps = ({ req, res }) => {
+// 	try {
+// 		const login = await API.post('/v1/auth/token', null, {
+// 			headers:
+// 			{
+// 				'Authorization': req.cookies.cookie,
+// 				'Accept': 'Application/json',
+// 				'Content-type': 'Application/json',
+// 			},
+// 			withCredentials: true
+// 		})
+// 	}
+// 	catch (err) {
+// 		console.log('err', err);
+// 	}
+// }

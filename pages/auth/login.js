@@ -26,13 +26,11 @@ function LoginPage() {
 				id: id,
 				password: password,
 			})
-			console.log('data', res.data);
 			// 로그인 성공
 			if (res.data.success) {
 				setIsLogin(true);
 				alert('로그인 성공');
-				console.log('res', res);
-				// router.push('/list');
+				router.push('/list');
 			}
 			// 로그인 실패
 			else {
