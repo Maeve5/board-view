@@ -2,8 +2,9 @@ import React, { useEffect, useCallback } from 'react';
 import router from 'next/router';
 import { useRecoilState } from 'recoil';
 import loginState from '../../atom/loginState';
-import { Button, Layout, Menu } from 'antd';
 import API from '../../modules/api';
+import axios from "axios";
+import { Button, Layout, Menu } from 'antd';
 const { Header, Content, Footer } = Layout;
 
 function TopHeader({ path, user }) {
@@ -18,7 +19,21 @@ function TopHeader({ path, user }) {
 	
 	const onLogout = useCallback(async () => {
 		setIsLogin(false);
-		await API.post('/v1/auth/logout', {user: user});
+		// await API.post('/v1/auth/logout', {user: user});
+		await axios({
+			url: `/v1/auth/logout`,
+			method: 'post',
+			data: {
+				userKey: user.userKey
+			},
+			baseURL: 'http://localhost:8082',
+			headers: {
+				'Authorization': user.token,
+				'Accept': 'Application/json',
+				'Content-Type': 'application/json',
+			},
+			withCredentials: true,
+		});
 		router.push('/list');
 	}, [isLogin]);
 

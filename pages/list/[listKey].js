@@ -1,12 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import { router } from 'next/router';
+import { server } from '../../modules/server';
+import API from '../../modules/api';
+import axios from "axios";
 import TopHeader from '../../components/global/TopHeader';
 import Post from '../../components/list/Post';
-import API from '../../modules/api';
-import { server } from '../../modules/server';
 import { Button, Modal } from 'antd';
 
 function ListKey({ success, user, result, listKey }) {
+	console.log('result', result);
 	// 존재하지 않는 페이지
 	// if (!success) {
 	// 	alert('존재하지 않는 게시물입니다.');
@@ -16,14 +18,6 @@ function ListKey({ success, user, result, listKey }) {
 	// console.log('user', user);
 	// console.log('result', result);
 
-	// 수정 페이지 이동
-	const SendQuery = useCallback (() => {
-		router.push({
-			pathname: '/list/update',
-			query: { title: result.title, description: result.description, listKey: listKey },
-		}, `/list/update/${listKey}`);
-	}, []);
-
 	// 삭제
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -31,7 +25,18 @@ function ListKey({ success, user, result, listKey }) {
 	const onDelete = useCallback (async () => {
 		
 		try {
-			await API.delete(`/v1/list/${listKey}`);
+			await axios({
+				url: `/v1/list/${listKey}`,
+				method: 'delete',
+				baseURL: 'http://localhost:8082',
+				headers: {
+					'Authorization': user.token,
+					'Accept': 'Application/json',
+					'Content-Type': 'application/json',
+				},
+				withCredentials: true,
+			});
+			// await API.delete(`/v1/list/${listKey}`);
 			router.push(`/list`);
 		}
 		catch (error) {
@@ -48,7 +53,7 @@ function ListKey({ success, user, result, listKey }) {
 			{/* 작성자일 때 */}
 			{result.userKey === user.userKey ?
 				<div className='button'>
-					<Button style={{ marginRight: '5px' }} onClick={SendQuery}>수정</Button>
+					<Button style={{ marginRight: '5px' }} onClick={() => router.push(`/list/update/${listKey}`)}>수정</Button>
 					<Button onClick={() => setIsModalOpen(true)}>삭제</Button>
 				</div>
 				: ''
@@ -69,6 +74,7 @@ function ListKey({ success, user, result, listKey }) {
 export default React.memo(ListKey);
 
 export const getServerSideProps = async ({ req, params }) => {
+	console.log('req', req);
 	let listKey = params.listKey;
 	const method = 'get';
 	const uri = `/v1/list/${params.listKey}`;

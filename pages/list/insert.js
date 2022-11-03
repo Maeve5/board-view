@@ -2,11 +2,12 @@ import React, { useState, useCallback } from 'react';
 import { router } from 'next/router';
 import TopHeader from '../../components/global/TopHeader';
 import API from '../../modules/api';
+import axios from "axios";
 import { server } from '../../modules/server';
 import { Input, Button } from 'antd';
 const { TextArea } = Input;
 
-function InsertPage({ success, user, result }) {
+function InsertPage({ success, user }) {
 
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
@@ -19,14 +20,35 @@ function InsertPage({ success, user, result }) {
 			return false;
 		}
 
-		await API.post(`/v1/list`, {
-			title: title,
-			description: description,
-			userKey: user.userKey,
-		}).then((response) => {
+		try {
+			console.log(user);
+			await axios({
+				url: `/v1/list`,
+				method: 'post',
+				data: {
+					title: title,
+					description: description,
+					userKey: user.userKey,
+				},
+				baseURL: 'http://localhost:8082',
+				headers: {
+					'Authorization': user.token,
+					'Accept': 'Application/json',
+					'Content-Type': 'application/json',
+				},
+				withCredentials: true,
+			});
 			router.push('/list');
-		});
-		
+
+		// await API.post(`/v1/list`, {
+		// 	title: title,
+		// 	description: description,
+		// 	userKey: user.userKey,
+		// })
+		}
+		catch (err) {
+			console.log('onInsert 에러', err);
+		}		
 	}, [title, description]);
 
 	return (
@@ -78,13 +100,14 @@ function InsertPage({ success, user, result }) {
 export default React.memo(InsertPage);
 
 export const getServerSideProps = async ({ req }) => {
+	// console.log(req.cookies);
 	const method = 'get';
 	const uri = `/v1/list`;
 	let init = await server({ req, method, uri });
 	const { success, isLogin, user, result } = init;
 
 	if (isLogin) {
-		return { props: { success, user, result }};
+		return { props: { success, user }};
 	}
 	else {
 		return {
@@ -94,4 +117,4 @@ export const getServerSideProps = async ({ req }) => {
 			}
 		};
 	}
-}
+};

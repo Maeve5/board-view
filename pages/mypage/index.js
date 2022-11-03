@@ -1,25 +1,22 @@
-import { Button, Input } from 'antd';
-import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import React, { useState } from 'react';
+import { router } from 'next/router';
+import { server } from '../../modules/server';
 import TopHeader from '../../components/global/TopHeader';
-import { useAsync } from 'react-async';
+import { Button, Input } from 'antd';
 
-const MyPage = () => {
+const MyPage = ({ user }) => {
 
-	// const [name, setName] = useState('');
-	// const [nickname, setNickname] = useState('');
 
 	// const initData = useCallback(() => {
 	// 	setName();
 	// 	setNickname();
 	// }, []);
 
-	const user = useAsync('get', `/v1/user`);
-	console.log('user', user);
 
 	return (
 		<>
-			<TopHeader />
+			<TopHeader user ={user} />
+
 			<div className='mypage'>
 				<div className='input'>
 					<div className='title'>ID</div>
@@ -28,16 +25,9 @@ const MyPage = () => {
 							type='text'
 							placeholder="아이디를 입력해 주세요."
 							style={{ width: 196 }}
-						// value={name}
-						/>
-					</div>
-				</div>
-				<div className='input'>
-					<div className='title'>비밀번호</div>
-					<div>
-						<Input.Password
-							placeholder="비밀번호를 입력해 주세요."
-							iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+							value={user ? user.id : ''}
+							readOnly={true}
+							bordered={false}
 						/>
 					</div>
 				</div>
@@ -48,12 +38,15 @@ const MyPage = () => {
 							type='text'
 							placeholder="이름을 입력해 주세요."
 							style={{ width: 196 }}
-						// value={nickname}
+							value={user ? user.name : ''}
+							readOnly={true}
+							bordered={false}
 						/>
 					</div>
 				</div>
+
 				<div className='button'>
-					<Button>수정</Button>
+					<Button onClick={() => router.push('/mypage/edit')}>수정</Button>
 				</div>
 			</div>
 
@@ -67,4 +60,25 @@ const MyPage = () => {
 	);
 };
 
-export default MyPage;
+export default React.memo(MyPage);
+
+export const getServerSideProps = async ({ req }) => {
+	// console.log(req.cookies);
+	const method = 'get';
+	const uri = `/v1/user`;
+	let init = await server({ req, method, uri });
+	console.log('init', init);
+	const { success, isLogin, user } = init;
+
+	if (isLogin) {
+		return { props: { success, user }};
+	}
+	else {
+		return {
+			redirect: {
+				permanent: false,
+				destination: '/auth/login'
+			}
+		};
+	}
+};

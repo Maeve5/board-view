@@ -1,19 +1,20 @@
 import React, { useState, useCallback } from 'react';
 import { router, useRouter } from 'next/router';
-import TopHeader from '../../components/global/TopHeader';
-import API from '../../modules/api';
+import TopHeader from '../../../components/global/TopHeader';
+import API from '../../../modules/api';
 import axios from "axios";
-import { server } from '../../modules/server';
+import { server } from '../../../modules/server';
 import { Input, Button } from 'antd';
 const { TextArea } = Input;
 
-function Update({ user }) {
+function Update({ req, success, user, result, listKey }) {
+	console.log('user', user);
 	
-	const query = useRouter().query;
+	// const query = useRouter().query;
 	// query: { title, description, listKey }
 	
-	const [title, setTitle] = useState(query.title);
-	const [description, setDescription] = useState(query.description);
+	const [title, setTitle] = useState(result.title);
+	const [description, setDescription] = useState(result.description);
 
 	const onUpdate = useCallback (async () => {
 
@@ -23,32 +24,32 @@ function Update({ user }) {
 		}
 
 		try {
-			// await axios({
-			// 	url: `/v1/list/${query.listKey}`,
-			// 	method: 'patch',
-			// 	data: {
-			// 		title: title,
-			// 		description: description
-			// 	},
-			// 	baseURL: 'http://localhost:8082',
-			// 	headers: {
-			// 		'Authorization': req.cookies.cookie ? req.cookies.cookie : '',
-			// 		'Accept': 'Application/json',
-			// 		'Content-Type': 'application/json',
-			// 	},
-			// 	withCredentials: true,
-			// })
-			await API.patch(`/v1/list/${query.listKey}`, {
-				title: title,
-				description: description
-			},
-			{headers: {
-				'Authorization': req.cookies.cookie ? req.cookies.cookie : '',
-				'Accept': 'Application/json',
-				'Content-Type': 'application/json',
-			}}
-			);
-			// router.push(`/list/${query.listKey}`);
+			await axios({
+				url: `/v1/list/${listKey}`,
+				method: 'patch',
+				data: {
+					title: title,
+					description: description
+				},
+				baseURL: 'http://localhost:8082',
+				headers: {
+					'Authorization': user.token,
+					'Accept': 'Application/json',
+					'Content-Type': 'application/json',
+				},
+				withCredentials: true,
+			});
+			// await API.patch(`/v1/list/${query.listKey}`, {
+			// 	title: title,
+			// 	description: description
+			// },
+			// {headers: {
+			// 	'Authorization': req.cookies.cookie ? req.cookies.cookie : '',
+			// 	'Accept': 'Application/json',
+			// 	'Content-Type': 'application/json',
+			// }}
+			// );
+			router.push(`/list/${listKey}`);
 		}
 		catch (error) {
 			console.log('onUpdate 에러', error);
@@ -102,14 +103,18 @@ function Update({ user }) {
 
 export default React.memo(Update);
 
-export const getServerSideProps = async ({ req }) => {
+export const getServerSideProps = async ({ req, params }) => {
+	console.log('req', req);
+	let listKey = params.listKey;
 	const method = 'get';
-	const uri = `/v1/list`;
+	const uri = `/v1/list/${params.listKey}`;
+	// console.log(req);
 	let init = await server({ req, method, uri });
+	// console.log('init', init);
 	const { success, isLogin, user, result } = init;
 
 	if (isLogin) {
-		return { props: { success, user }};
+		return { props: { success, user, result, listKey }};
 	}
 	else {
 		return {
