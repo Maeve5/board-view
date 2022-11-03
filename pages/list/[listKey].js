@@ -1,17 +1,20 @@
-import React, { useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { router } from 'next/router';
 import TopHeader from '../../components/global/TopHeader';
+import Post from '../../components/list/Post';
 import API from '../../modules/api';
-import { Input, Button } from 'antd';
-const { TextArea } = Input;
+import { server } from '../../modules/server';
+import { Button, Modal } from 'antd';
 
-function ListKey({ success, result, listKey }) {
-
+function ListKey({ success, user, result, listKey }) {
 	// 존재하지 않는 페이지
 	// if (!success) {
 	// 	alert('존재하지 않는 게시물입니다.');
 	// 	return false;
 	// }
+
+	// console.log('user', user);
+	// console.log('result', result);
 
 	// 수정 페이지 이동
 	const SendQuery = useCallback (() => {
@@ -22,6 +25,9 @@ function ListKey({ success, result, listKey }) {
 	}, []);
 
 	// 삭제
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
+
 	const onDelete = useCallback (async () => {
 		
 		try {
@@ -35,48 +41,25 @@ function ListKey({ success, result, listKey }) {
 
 	return (
 		<>
-			<TopHeader />
+			<TopHeader user={user} />
 
-			<div className='insertpage'>
-				<div className='item'>
-					<div className='title'>제목</div>
-					<div className='input'>
-						<Input
-							type='text'
-							placeholder='제목을 입력해 주세요.'
-							style={{ display: 'block' }}
-							value={result ? result.title : null}
-							readOnly={true}
-							bordered={false}
-						/>
-					</div>
-				</div>
-				<div className='item'>
-					<div className='title'>내용</div>
-					<div className='input'>
-						<TextArea
-							rows={4}
-							placeholder='내용을 입력해 주세요.'
-							style={{ resize: 'none' }}
-							value={result ? result.description : null}
-							readOnly={true}
-							bordered={false}
-						/>
-					</div>
-				</div>
+			<Post result={result} />
 
+			{/* 작성자일 때 */}
+			{result.userKey === user.userKey ?
 				<div className='button'>
-					<Button
-						onClick={SendQuery}>수정</Button>
-					<Button onClick={onDelete}>삭제</Button>
+					<Button style={{ marginRight: '5px' }} onClick={SendQuery}>수정</Button>
+					<Button onClick={() => setIsModalOpen(true)}>삭제</Button>
 				</div>
-			</div>
+				: ''
+			}
+
+			{/* 삭제 확인 모달 */}
+			<Modal title='알림' open={isModalOpen} onOk={onDelete} onCancel={() => setIsModalOpen(false)}>
+				<p>삭제하시겠습니까?</p>
+			</Modal>
 
 			<style jsx>{`
-			.insertpage { margin: 100px auto; max-width: 800px; width: 80%; }
-			.item { margin: 10px 0; display: flex; align-items: center; justify-content: center; border-top: 1px solid #aaa; border-bottom: 1px solid #aaa; }
-			.title { flex: 1; text-align: center; }
-			.input { flex: 8; }
 			.button { display: flex; align-items: center; justify-content: center; }
 			`}</style>
 		</>
@@ -85,19 +68,24 @@ function ListKey({ success, result, listKey }) {
 
 export default React.memo(ListKey);
 
-export const getServerSideProps = async ({ params }) => {
-	try {
-		const res = await API.get(`/v1/list/${params.listKey}`);
+export const getServerSideProps = async ({ req, params }) => {
+	let listKey = params.listKey;
+	const method = 'get';
+	const uri = `/v1/list/${params.listKey}`;
+	// console.log(req);
+	let init = await server({ req, method, uri });
+	// console.log('init', init);
+	const { success, isLogin, user, result } = init;
 
-		// if ()
-		const { success, result } = await res.data;
-		console.log('result', res.data);
-		let listKey = params.listKey;
-		return { props: { success, result, listKey } }
+	if (isLogin) {
+		return { props: { success, user, result, listKey }};
 	}
-	catch (err) {
-		// console.log('err', err.response.data);
-		console.log('err', err);
-		return { props : { success: false }}
+	else {
+		return {
+			redirect: {
+				permanent: false,
+				destination: '/auth/login'
+			}
+		};
 	}
 }

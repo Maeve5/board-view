@@ -19,7 +19,7 @@ const MyPage = () => {
 
 	return (
 		<>
-			<TopHeader></TopHeader>
+			<TopHeader />
 			<div className='mypage'>
 				<div className='input'>
 					<div className='title'>ID</div>

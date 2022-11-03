@@ -2,10 +2,11 @@ import React, { useState, useCallback } from 'react';
 import { router } from 'next/router';
 import TopHeader from '../../components/global/TopHeader';
 import API from '../../modules/api';
+import { server } from '../../modules/server';
 import { Input, Button } from 'antd';
 const { TextArea } = Input;
 
-function InsertPage() {
+function InsertPage({ success, user, result }) {
 
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
@@ -18,23 +19,19 @@ function InsertPage() {
 			return false;
 		}
 
-		try {
-			await API.post(`/v1/list`, {
-				title: title,
-				description: description,
-				// name: 'name1',
-				userKey: '1',
-			});
+		await API.post(`/v1/list`, {
+			title: title,
+			description: description,
+			userKey: user.userKey,
+		}).then((response) => {
 			router.push('/list');
-		}
-		catch (error) {
-			console.log('onInsert 에러', error);
-		}
+		});
+		
 	}, [title, description]);
 
 	return (
 		<>
-			<TopHeader />
+			<TopHeader user={user} />
 
 			<div className='insertpage'>
 				<div className='item'>
@@ -80,19 +77,21 @@ function InsertPage() {
 
 export default React.memo(InsertPage);
 
-// export const getServerSideProps = ({ req, res }) => {
-// 	try {
-// 		const login = await API.post('/v1/auth/token', null, {
-// 			headers:
-// 			{
-// 				'Authorization': req.cookies.cookie,
-// 				'Accept': 'Application/json',
-// 				'Content-type': 'Application/json',
-// 			},
-// 			withCredentials: true
-// 		})
-// 	}
-// 	catch (err) {
-// 		console.log('err', err);
-// 	}
-// }
+export const getServerSideProps = async ({ req }) => {
+	const method = 'get';
+	const uri = `/v1/list`;
+	let init = await server({ req, method, uri });
+	const { success, isLogin, user, result } = init;
+
+	if (isLogin) {
+		return { props: { success, user, result }};
+	}
+	else {
+		return {
+			redirect: {
+				permanent: false,
+				destination: '/auth/login'
+			}
+		};
+	}
+}

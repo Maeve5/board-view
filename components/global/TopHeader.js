@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import router from 'next/router';
 import { useRecoilState } from 'recoil';
 import loginState from '../../atom/loginState';
@@ -9,7 +9,13 @@ const { Header, Content, Footer } = Layout;
 function TopHeader({ path, user }) {
 
 	const [isLogin, setIsLogin] = useRecoilState(loginState);
-
+	
+	useEffect(() => {
+		if (user) {
+			setIsLogin(user.isLogin);
+		}
+	}, []);
+	
 	const onLogout = useCallback(async () => {
 		setIsLogin(false);
 		await API.post('/v1/auth/logout', {user: user});
@@ -38,6 +44,7 @@ function TopHeader({ path, user }) {
 							style={{ flex: 1 }}
 							theme="light"
 							mode="horizontal"
+							// defaultSelectedKeys={}
 							onClick={(e) => router.push(`/${e.key}`)}
 							items={[
 								{
@@ -46,18 +53,18 @@ function TopHeader({ path, user }) {
 								},
 								isLogin ?
 								{
-									key: 'my',
+									key: 'mypage',
 									label: '마이페이지'
 								} : null,
 							]}
 						/>
 						{isLogin ? 
 							<>
-								<div className='name'>님</div>
+								<div className='name'>{user ? user.name : ''} 님</div>
 								<Button onClick={onLogout}>로그아웃</Button>
 							</>
 							: <>
-								<Button onClick={() => router.push('/auth/login')}>로그인</Button>
+								<Button style={{ marginRight: '5px' }} onClick={() => router.push('/auth/login')}>로그인</Button>
 								<Button onClick={() => router.push('/auth/join')}>회원가입</Button>
 							</>
 						}

@@ -1,10 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
+import { Spin } from 'antd';
 
 function Posts({ postArr, firstPost, loading }) {
 
 	if (loading) {
-		return <h2>Loading...</h2>
+		return <Spin style={{margin: '0 auto'}} tip="Loading..." />
 	}
 
 	return (

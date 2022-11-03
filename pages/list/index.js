@@ -4,13 +4,13 @@ import TopHeader from '../../components/global/TopHeader';
 import API from '../../modules/api';
 import { Button, Pagination } from 'antd';
 import Posts from '../../components/list/Posts';
+import { server } from '../../modules/server';
 
-function ListPage({ user, result }) {
-
+function ListPage({ success, user, result }) {
 	const [posts, setPosts] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [page, setPage] = useState(1);
-	const [pageSize] = useState(5);
+	const [pageSize] = useState(10);
 
 	useEffect(() => {
 		const fetchPosts = async () => {
@@ -37,7 +37,9 @@ function ListPage({ user, result }) {
 				</div>
 
 				{/* 게시글 목록 */}
-				<Posts postArr={postArr} firstPost={firstPost} loading={loading} />
+				<div style={{ display: 'block', textAlign: 'center' }}>
+					<Posts postArr={postArr} firstPost={firstPost} loading={loading} />
+				</div>
 
 				<div className='pagination'>
 					<Pagination defaultCurrent={page} onChange={(e) => setPage(e)} pageSize={pageSize} total={result.length} />
@@ -54,25 +56,37 @@ function ListPage({ user, result }) {
 
 export default React.memo(ListPage);
 
-export const getServerSideProps = async ({ req, res, path }) => {
-	console.log('url', req);
+export const getServerSideProps = async ({ req }) => {
+	// try {
+	// 	// const res = await API.get('/v1/list');
+	// 	const res = await API.get('/v1/list', {
+	// 		headers:
+	// 		{
+	// 			'Authorization': req.cookies.cookie ? req.cookies.cookie : '',
+	// 			'Accept': 'Application/json',
+	// 			'Content-type': 'Application/json',
+	// 		},
+	// 		withCredentials: true
+	// 	});
+	// 	const { user, result } = await res.data;
+	// 	// console.log(res.data);
+	// 	return { props: { user, result } }
+
+
+	// }
+	// catch (err) {
+	// 	console.log('err', err);
+	// 	return { props: { result: [] } }
+	// }
 	try {
-		// const res = await API.get('/v1/list');
-		const res = await API.get('/v1/list', {
-			headers:
-			{
-				'Authorization': req.cookies.cookie ? req.cookies.cookie : '',
-				'Accept': 'Application/json',
-				'Content-type': 'Application/json',
-			},
-			withCredentials: true
-		});
-		const { user, result } = await res.data;
-		// console.log(res.data);
-		return { props: { user, result } }
+		const method = 'get';
+		const uri = `/v1/list`;
+		let init = await server({ req, method, uri });
+		const { success, isLogin, user, result } = init;
+		
+		return { props: { success, user, result }};
 	}
 	catch (err) {
-		console.log('err', err);
-		return { props: { result: [] } }
+		return result
 	}
-}
+};

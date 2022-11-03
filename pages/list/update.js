@@ -2,17 +2,19 @@ import React, { useState, useCallback } from 'react';
 import { router, useRouter } from 'next/router';
 import TopHeader from '../../components/global/TopHeader';
 import API from '../../modules/api';
+import axios from "axios";
+import { server } from '../../modules/server';
 import { Input, Button } from 'antd';
 const { TextArea } = Input;
 
-function Update() {
+function Update({ user }) {
 	
 	const query = useRouter().query;
-	// query: { title: result.title, description: result.description, listKey: listKey }
+	// query: { title, description, listKey }
 	
 	const [title, setTitle] = useState(query.title);
 	const [description, setDescription] = useState(query.description);
-	
+
 	const onUpdate = useCallback (async () => {
 
 		if ( !title || !description ) {
@@ -21,11 +23,32 @@ function Update() {
 		}
 
 		try {
+			// await axios({
+			// 	url: `/v1/list/${query.listKey}`,
+			// 	method: 'patch',
+			// 	data: {
+			// 		title: title,
+			// 		description: description
+			// 	},
+			// 	baseURL: 'http://localhost:8082',
+			// 	headers: {
+			// 		'Authorization': req.cookies.cookie ? req.cookies.cookie : '',
+			// 		'Accept': 'Application/json',
+			// 		'Content-Type': 'application/json',
+			// 	},
+			// 	withCredentials: true,
+			// })
 			await API.patch(`/v1/list/${query.listKey}`, {
 				title: title,
 				description: description
-			});
-			router.push(`/list/${query.listKey}`);
+			},
+			{headers: {
+				'Authorization': req.cookies.cookie ? req.cookies.cookie : '',
+				'Accept': 'Application/json',
+				'Content-Type': 'application/json',
+			}}
+			);
+			// router.push(`/list/${query.listKey}`);
 		}
 		catch (error) {
 			console.log('onUpdate 에러', error);
@@ -34,7 +57,8 @@ function Update() {
 
 	return (
 		<>
-			<TopHeader />
+			<TopHeader user={user} />
+
 			<div className='insertpage'>
 				<div className='item'>
 					<div className='title'>제목</div>
@@ -77,3 +101,22 @@ function Update() {
 }
 
 export default React.memo(Update);
+
+export const getServerSideProps = async ({ req }) => {
+	const method = 'get';
+	const uri = `/v1/list`;
+	let init = await server({ req, method, uri });
+	const { success, isLogin, user, result } = init;
+
+	if (isLogin) {
+		return { props: { success, user }};
+	}
+	else {
+		return {
+			redirect: {
+				permanent: false,
+				destination: '/auth/login'
+			}
+		};
+	}
+}
