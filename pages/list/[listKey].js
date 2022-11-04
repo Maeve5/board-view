@@ -27,7 +27,6 @@ function ListKey({ success, user, result, listKey }) {
 				},
 				withCredentials: true,
 			});
-			// await API.delete(`/v1/list/${listKey}`);
 			router.push(`/list`);
 		}
 		catch (error) {
@@ -66,7 +65,6 @@ export default React.memo(ListKey);
 
 export const getServerSideProps = async ({ req, params }) => {
 	let listKey = params.listKey;
-	console.log('listKey',listKey);
 	const method = 'get';
 	const uri = `/v1/list/${params.listKey}`;
 	// console.log(req);

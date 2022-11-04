@@ -5,13 +5,10 @@ import API from '../../modules/api';
 import { Button, Pagination } from 'antd';
 import Posts from '../../components/list/Posts';
 import { server } from '../../modules/server';
-import Spinner from '../../components/global/Spinner';
 import { useRecoilState } from 'recoil';
 import spinState from '../../atom/spinState';
 
 function ListPage({ success, user, result }) {
-	console.log('success', success);
-
 	const [isSpin, setIsSpin] = useRecoilState(spinState);
 
 	const [posts, setPosts] = useState([]);
@@ -20,22 +17,22 @@ function ListPage({ success, user, result }) {
 	const [pageSize] = useState(10);
 
 	useEffect(() => {
-		setIsSpin(true);
+	// 	setIsSpin(true);
 		
-		if (success) {
+	// 	if (success) {
+	// 		setPosts(result);
+	// 		setIsSpin(false);
+	// 	}
+	// 	else {
+	// 		setIsSpin(true);
+	// 	}
+		const fetchPosts = async () => {
+			setLoading(true);
 			setPosts(result);
-			setIsSpin(false);
+			setLoading(false);
 		}
-		else {
-			setIsSpin(true);
-		}
-		// const fetchPosts = async () => {
-		// 	setLoading(true);
-		// 	setPosts(result);
-		// 	setLoading(false);
-		// }
 
-		// fetchPosts();
+		fetchPosts();
 	}, []);
 
 	const lastPost = page * pageSize;

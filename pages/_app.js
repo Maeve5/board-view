@@ -18,8 +18,9 @@ function MyApp({ Component, pageProps }) {
 			
 			<RecoilRoot>
 				<ConfigProvider locale={koKR}>
-					<Spinner />
-					<Component {...pageProps} />
+					<Spinner>
+						<Component {...pageProps} />
+					</Spinner>
 				</ConfigProvider>
 			</RecoilRoot>
 		</>

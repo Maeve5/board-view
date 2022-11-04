@@ -27,6 +27,7 @@ export const server = async ({ req, method, uri, body }) => {
 		// 	throw new Error('로그인이 필요합니다.')
 		// }
 
+		// if (uri)
 		const res = await axios({
 			url: uri,
 			method: method,

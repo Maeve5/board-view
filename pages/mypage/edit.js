@@ -44,6 +44,8 @@ const MyEditPage = ({user}) => {
 				withCredentials: true,
 			});
 			alert('변경되었습니다.');
+			// router.reload();
+			router.replace('/mypage/edit');
 			setPassword('');
 			setNewPassword1('');
 			setNewPassword2('');

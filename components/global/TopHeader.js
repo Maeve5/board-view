@@ -2,34 +2,25 @@ import React, { useState, useEffect, useCallback } from 'react';
 import router from 'next/router';
 import { useRecoilState } from 'recoil';
 import loginState from '../../atom/loginState';
-import spinState from '../../atom/spinState';
-import Spinner from '../global/Spinner';
 import axios from "axios";
 import API from '../../modules/api';
-import { Button, Layout, Menu } from 'antd';
+import { Button, Layout, Menu, Modal } from 'antd';
 const { Header, Content, Footer } = Layout;
 
 function TopHeader({ user }) {
 
 	const [isLogin, setIsLogin] = useRecoilState(loginState);
-	const [isSpin, setIsSpin] = useRecoilState(spinState);
-	
-	// useEffect(() => {
-	// 	setIsSpin(true);
-		
-	// 	if (user) {
-	// 		setIsLogin(user.isLogin);
-	// 		setIsSpin(false);
 
-	// 		console.log('user', user);
-	// 		console.log('isLogin', isLogin);
-	// 		console.log('isSpin', isSpin);
-	// 	}
-	// 	else {
-	// 		setIsSpin(true);
-	// 	}
-	// }, []);
+	// 로그인 상태 유지
+	useEffect(() => {
+		if (user) {
+			setIsLogin(true);
+		}
+	}, []);
 	
+	// 로그아웃
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
 	const onLogout = useCallback(async () => {
 		setIsLogin(false);
 		await axios({
@@ -78,6 +69,7 @@ function TopHeader({ user }) {
 									key: 'list',
 									label: '게시판'
 								},
+								// 로그인 했을 때만
 								isLogin ?
 								{
 									key: 'mypage',
@@ -85,16 +77,23 @@ function TopHeader({ user }) {
 								} : null,
 							]}
 						/>
+						
+						{/* 로그인 여부에 따라*/}
 						{isLogin ? 
 							<>
 								<div className='name'>{user ? user.name : ''} 님</div>
-								<Button onClick={onLogout}>로그아웃</Button>
+								<Button onClick={() => setIsModalOpen(true)}>로그아웃</Button>
 							</>
 							: <>
 								<Button style={{ marginRight: '5px' }} onClick={() => router.push('/auth/login')}>로그인</Button>
 								<Button onClick={() => router.push('/auth/join')}>회원가입</Button>
 							</>
 						}
+
+						{/* 로그아웃 확인 모달 */}
+						<Modal title='알림' open={isModalOpen} onOk={onLogout} onCancel={() => setIsModalOpen(false)}>
+							<p>로그아웃하시겠습니까?</p>
+						</Modal>
 					</div>
 				</Header>
 			</Layout>

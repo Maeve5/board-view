@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { router } from 'next/router';
-import { useSetRecoilState } from 'recoil';
+import { useSetRecoilState, useRecoilState } from 'recoil';
 import loginState from '../../atom/loginState';
+import spinState from '../../atom/spinState';
 import TopHeader from '../../components/global/TopHeader';
 import API from '../../modules/api';
 import { Button, Input } from 'antd';
@@ -12,7 +13,7 @@ function LoginPage() {
 	const [id, setId] = useState('');
 	const [password, setPassword] = useState('');
 	const setIsLogin = useSetRecoilState(loginState);
-
+	
 	const onLogin = useCallback(async () => {
 
 		if (!id || !password ) {
@@ -30,7 +31,7 @@ function LoginPage() {
 			if (res.data.success) {
 				setIsLogin(true);
 				alert('로그인 성공');
-				router.push('/list');
+				router.replace('/list');
 			}
 			// 로그인 실패
 			else {

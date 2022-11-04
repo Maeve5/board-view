@@ -4,18 +4,8 @@ import TopHeader from '../../components/global/TopHeader';
 import { Button, Input } from 'antd';
 import { EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons';
 import API from '../../modules/api';
-import spinState from '../../atom/spinState';
-import Spinner from '../global/Spinner';
 
 function JoinPage() {
-
-	const [isSpin, setIsSpin] = useRecoilState(spinState);
-
-	// useEffect(() => {
-	// 	setIsSpin(true);
-
-	// 	if ()
-	// }, []);
 
 	const [id, setId] = useState('');
 	const [password, setPassword] = useState('');
