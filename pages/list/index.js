@@ -5,21 +5,37 @@ import API from '../../modules/api';
 import { Button, Pagination } from 'antd';
 import Posts from '../../components/list/Posts';
 import { server } from '../../modules/server';
+import Spinner from '../../components/global/Spinner';
+import { useRecoilState } from 'recoil';
+import spinState from '../../atom/spinState';
 
 function ListPage({ success, user, result }) {
+	console.log('success', success);
+
+	const [isSpin, setIsSpin] = useRecoilState(spinState);
+
 	const [posts, setPosts] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [page, setPage] = useState(1);
 	const [pageSize] = useState(10);
 
 	useEffect(() => {
-		const fetchPosts = async () => {
-			setLoading(true);
+		setIsSpin(true);
+		
+		if (success) {
 			setPosts(result);
-			setLoading(false);
+			setIsSpin(false);
 		}
+		else {
+			setIsSpin(true);
+		}
+		// const fetchPosts = async () => {
+		// 	setLoading(true);
+		// 	setPosts(result);
+		// 	setLoading(false);
+		// }
 
-		fetchPosts();
+		// fetchPosts();
 	}, []);
 
 	const lastPost = page * pageSize;
@@ -57,27 +73,7 @@ function ListPage({ success, user, result }) {
 export default React.memo(ListPage);
 
 export const getServerSideProps = async ({ req }) => {
-	// try {
-	// 	// const res = await API.get('/v1/list');
-	// 	const res = await API.get('/v1/list', {
-	// 		headers:
-	// 		{
-	// 			'Authorization': req.cookies.cookie ? req.cookies.cookie : '',
-	// 			'Accept': 'Application/json',
-	// 			'Content-type': 'Application/json',
-	// 		},
-	// 		withCredentials: true
-	// 	});
-	// 	const { user, result } = await res.data;
-	// 	// console.log(res.data);
-	// 	return { props: { user, result } }
 
-
-	// }
-	// catch (err) {
-	// 	console.log('err', err);
-	// 	return { props: { result: [] } }
-	// }
 	try {
 		const method = 'get';
 		const uri = `/v1/list`;

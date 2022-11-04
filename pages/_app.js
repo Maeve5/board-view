@@ -3,6 +3,7 @@ import Head from 'next/head'
 import { ConfigProvider } from 'antd';
 import koKR from 'antd/lib/locale/ko_KR';
 import 'antd/dist/antd.css';
+import Spinner from '../components/global/Spinner';
 
 function MyApp({ Component, pageProps }) {
 	return (
@@ -17,6 +18,7 @@ function MyApp({ Component, pageProps }) {
 			
 			<RecoilRoot>
 				<ConfigProvider locale={koKR}>
+					<Spinner />
 					<Component {...pageProps} />
 				</ConfigProvider>
 			</RecoilRoot>

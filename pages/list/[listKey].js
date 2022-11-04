@@ -8,15 +8,6 @@ import Post from '../../components/list/Post';
 import { Button, Modal } from 'antd';
 
 function ListKey({ success, user, result, listKey }) {
-	console.log('result', result);
-	// 존재하지 않는 페이지
-	// if (!success) {
-	// 	alert('존재하지 않는 게시물입니다.');
-	// 	return false;
-	// }
-
-	// console.log('user', user);
-	// console.log('result', result);
 
 	// 삭제
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -74,8 +65,8 @@ function ListKey({ success, user, result, listKey }) {
 export default React.memo(ListKey);
 
 export const getServerSideProps = async ({ req, params }) => {
-	console.log('req', req);
 	let listKey = params.listKey;
+	console.log('listKey',listKey);
 	const method = 'get';
 	const uri = `/v1/list/${params.listKey}`;
 	// console.log(req);

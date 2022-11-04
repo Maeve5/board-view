@@ -14,7 +14,6 @@ const MyEditPage = ({user}) => {
 	const [newPassword2, setNewPassword2] = useState('');
 
 	const onChange = useCallback (async () => {
-		// console.log(password !== newPassword1);
 
 		if ( !name || !password || !newPassword1 || !newPassword2 ) {
 			alert('빈칸이 있습니다.');
@@ -28,7 +27,7 @@ const MyEditPage = ({user}) => {
 		}
 
 		try {
-			const res = await axios({
+			await axios({
 				url: `/v1/user/${user.userKey}`,
 				method: 'patch',
 				data: {
@@ -44,7 +43,6 @@ const MyEditPage = ({user}) => {
 				},
 				withCredentials: true,
 			});
-			console.log('res', res);
 			alert('변경되었습니다.');
 			setPassword('');
 			setNewPassword1('');
@@ -58,6 +56,7 @@ const MyEditPage = ({user}) => {
 	return (
 		<>
 			<TopHeader user={user} />
+
 			<div className='mypage'>
 				<div className='input'>
 					<div className='title'>이름</div>

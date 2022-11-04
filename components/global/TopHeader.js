@@ -1,25 +1,37 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import router from 'next/router';
 import { useRecoilState } from 'recoil';
 import loginState from '../../atom/loginState';
-import API from '../../modules/api';
+import spinState from '../../atom/spinState';
+import Spinner from '../global/Spinner';
 import axios from "axios";
+import API from '../../modules/api';
 import { Button, Layout, Menu } from 'antd';
 const { Header, Content, Footer } = Layout;
 
-function TopHeader({ path, user }) {
+function TopHeader({ user }) {
 
 	const [isLogin, setIsLogin] = useRecoilState(loginState);
+	const [isSpin, setIsSpin] = useRecoilState(spinState);
 	
-	useEffect(() => {
-		if (user) {
-			setIsLogin(user.isLogin);
-		}
-	}, []);
+	// useEffect(() => {
+	// 	setIsSpin(true);
+		
+	// 	if (user) {
+	// 		setIsLogin(user.isLogin);
+	// 		setIsSpin(false);
+
+	// 		console.log('user', user);
+	// 		console.log('isLogin', isLogin);
+	// 		console.log('isSpin', isSpin);
+	// 	}
+	// 	else {
+	// 		setIsSpin(true);
+	// 	}
+	// }, []);
 	
 	const onLogout = useCallback(async () => {
 		setIsLogin(false);
-		// await API.post('/v1/auth/logout', {user: user});
 		await axios({
 			url: `/v1/auth/logout`,
 			method: 'post',
@@ -35,7 +47,7 @@ function TopHeader({ path, user }) {
 			withCredentials: true,
 		});
 		router.push('/list');
-	}, [isLogin]);
+	}, []);
 
 	return (
 		<>

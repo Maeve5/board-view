@@ -6,13 +6,6 @@ import { Button, Input } from 'antd';
 
 const MyPage = ({ user }) => {
 
-
-	// const initData = useCallback(() => {
-	// 	setName();
-	// 	setNickname();
-	// }, []);
-
-
 	return (
 		<>
 			<TopHeader user ={user} />
