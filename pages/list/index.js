@@ -1,31 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { router } from 'next/router';
 import TopHeader from '../../components/global/TopHeader';
-import API from '../../modules/api';
 import { Button, Pagination } from 'antd';
 import Posts from '../../components/list/Posts';
 import { server } from '../../modules/server';
-import { useRecoilState } from 'recoil';
-import spinState from '../../atom/spinState';
 
-function ListPage({ success, user, result }) {
-	const [isSpin, setIsSpin] = useRecoilState(spinState);
+function ListPage({ success, isLogin, user, result }) {
 
+	// 페이지네이션
 	const [posts, setPosts] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [page, setPage] = useState(1);
+	// 현재 페이지
+	const [currentPage, setCurrentPage] = useState(1);
 	const [pageSize] = useState(10);
 
 	useEffect(() => {
-	// 	setIsSpin(true);
-		
-	// 	if (success) {
-	// 		setPosts(result);
-	// 		setIsSpin(false);
-	// 	}
-	// 	else {
-	// 		setIsSpin(true);
-	// 	}
 		const fetchPosts = async () => {
 			setLoading(true);
 			setPosts(result);
@@ -35,14 +24,14 @@ function ListPage({ success, user, result }) {
 		fetchPosts();
 	}, []);
 
-	const lastPost = page * pageSize;
+	const lastPost = currentPage * pageSize;
 	const firstPost = lastPost - pageSize;
 	const postArr = posts.slice(firstPost, lastPost);
 
 	return (
 		<>
 			{/* 헤더 */}
-			<TopHeader user={user} />
+			<TopHeader user={user} isLogin={isLogin} />
 
 			<div className='list'>
 				<div className='button' style={{ float: 'right', margin: '0 20px 10px 0' }}>
@@ -55,7 +44,7 @@ function ListPage({ success, user, result }) {
 				</div>
 
 				<div className='pagination'>
-					<Pagination defaultCurrent={page} onChange={(e) => setPage(e)} pageSize={pageSize} total={result.length} />
+					<Pagination defaultCurrent={currentPage} onChange={(e) => setCurrentPage(e)} pageSize={pageSize} total={result.length} />
 				</div>
 			</div>
 
@@ -72,14 +61,12 @@ export default React.memo(ListPage);
 export const getServerSideProps = async ({ req }) => {
 
 	try {
-		const method = 'get';
-		const uri = `/v1/list`;
-		let init = await server({ req, method, uri });
+		let init = await server({ req });
 		const { success, isLogin, user, result } = init;
 		
-		return { props: { success, user, result }};
+		return { props: { success, isLogin, user, result }};
 	}
 	catch (err) {
-		return result
+		return console.log(err);
 	}
 };

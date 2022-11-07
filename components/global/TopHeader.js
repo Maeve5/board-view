@@ -7,14 +7,15 @@ import API from '../../modules/api';
 import { Button, Layout, Menu, Modal } from 'antd';
 const { Header, Content, Footer } = Layout;
 
-function TopHeader({ user }) {
+function TopHeader({ user, isLogin }) {
 
-	const [isLogin, setIsLogin] = useRecoilState(loginState);
+	const [login, setLogin] = useRecoilState(loginState);
+	console.log('login', login);
 
 	// 로그인 상태 유지
 	useEffect(() => {
-		if (user) {
-			setIsLogin(true);
+		if (isLogin) {
+			setLogin(true);
 		}
 	}, []);
 	
@@ -22,22 +23,9 @@ function TopHeader({ user }) {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	const onLogout = useCallback(async () => {
-		setIsLogin(false);
-		await axios({
-			url: `/v1/auth/logout`,
-			method: 'post',
-			data: {
-				userKey: user.userKey
-			},
-			baseURL: 'http://localhost:8082',
-			headers: {
-				'Authorization': user.token,
-				'Accept': 'Application/json',
-				'Content-Type': 'application/json',
-			},
-			withCredentials: true,
-		});
-		router.push('/list');
+		setLogin(false);
+		await API.post(`/v1/auth/logout`);
+		router.reload('/list');
 	}, []);
 
 	return (
@@ -70,16 +58,16 @@ function TopHeader({ user }) {
 									label: '게시판'
 								},
 								// 로그인 했을 때만
-								isLogin ?
+								login ?
 								{
 									key: 'mypage',
 									label: '마이페이지'
 								} : null,
 							]}
 						/>
-						
+
 						{/* 로그인 여부에 따라*/}
-						{isLogin ? 
+						{login ? 
 							<>
 								<div className='name'>{user ? user.name : ''} 님</div>
 								<Button onClick={() => setIsModalOpen(true)}>로그아웃</Button>

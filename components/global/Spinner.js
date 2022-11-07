@@ -9,14 +9,13 @@ function Spinner({ children }) {
 	const [isSpin, setIsSpin] = useRecoilState(spinState);
 
 	useEffect(() => {
-		console.log(isSpin);
-        router.events.on('routeChangeStart', (path) => {
+        router.events.on('routeChangeStart', () => {
             setIsSpin(true);
         });
-        router.events.on('routeChangeComplete', (path) => {
+        router.events.on('routeChangeComplete', () => {
             setIsSpin(false);
         });
-        router.events.on('routeChangeError', (path) => {
+        router.events.on('routeChangeError', () => {
             setIsSpin(false);
         });
     }, [isSpin]);
@@ -26,7 +25,6 @@ function Spinner({ children }) {
 			{isSpin ?
 				<div className='contentWrap'>
 					<Spin style={{ display: 'block', margin: '50vh auto' }} tip='Loading...' />
-					{/* <Spin /> */}
 				</div>
 			: <>{children}</>}
 

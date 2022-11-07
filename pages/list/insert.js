@@ -7,7 +7,7 @@ import { server } from '../../modules/server';
 import { Input, Button } from 'antd';
 const { TextArea } = Input;
 
-function InsertPage({ success, user }) {
+function InsertPage({ success, isLogin, user }) {
 
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
@@ -21,30 +21,13 @@ function InsertPage({ success, user }) {
 		}
 
 		try {
-			console.log(user);
-			await axios({
-				url: `/v1/list`,
-				method: 'post',
-				data: {
-					title: title,
-					description: description,
-					userKey: user.userKey,
-				},
-				baseURL: 'http://localhost:8082',
-				headers: {
-					'Authorization': user.token,
-					'Accept': 'Application/json',
-					'Content-Type': 'application/json',
-				},
-				withCredentials: true,
+			API.defaults.headers.common['Authorization'] = user.token;
+			await API.post(`/v1/list`, {
+				title: title,
+				description: description,
+				userKey: user.userKey,
 			});
 			router.push('/list');
-
-		// await API.post(`/v1/list`, {
-		// 	title: title,
-		// 	description: description,
-		// 	userKey: user.userKey,
-		// })
 		}
 		catch (err) {
 			console.log('onInsert 에러', err);
@@ -53,7 +36,7 @@ function InsertPage({ success, user }) {
 
 	return (
 		<>
-			<TopHeader user={user} />
+			<TopHeader user={user} isLogin={isLogin} />
 
 			<div className='insertpage'>
 				<div className='item'>
@@ -100,14 +83,11 @@ function InsertPage({ success, user }) {
 export default React.memo(InsertPage);
 
 export const getServerSideProps = async ({ req }) => {
-	// console.log(req.cookies);
-	const method = 'get';
-	const uri = `/v1/list`;
-	let init = await server({ req, method, uri });
+	let init = await server({ req });
 	const { success, isLogin, user, result } = init;
 
 	if (isLogin) {
-		return { props: { success, user }};
+		return { props: { success, isLogin, user }};
 	}
 	else {
 		return {

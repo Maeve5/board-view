@@ -8,12 +8,12 @@ import API from '../../modules/api';
 import { Button, Input } from 'antd';
 import { EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons';
 
-function LoginPage() {
+function LoginPage({ token }) {
 
 	const [id, setId] = useState('');
 	const [password, setPassword] = useState('');
 	const setIsLogin = useSetRecoilState(loginState);
-	
+
 	const onLogin = useCallback(async () => {
 
 		if (!id || !password ) {
@@ -42,7 +42,7 @@ function LoginPage() {
 		catch (error) {
 			// if (result.length === 0)
 			console.log('onLogin 에러', error);
-			alert(error.response.data.message);
+			// alert(error.response.data.message);
 		}
 
 	}, [id, password]);
@@ -93,3 +93,21 @@ function LoginPage() {
 };
 
 export default React.memo(LoginPage);
+
+export const getServerSideProps = async ({ req }) => {
+	console.log('reqLogin', !req.cookies.cookie);
+	const token = { cookies: req.cookies.cookie ? req.cookies.cookie : '' };
+	return { props : { token }};
+	// try {
+	// 	const method = 'get';
+	// 	const uri = `/v1/list`;
+	// 	let init = await server({ req, method, uri });
+	// 	const { success, isLogin, user, result } = init;
+	// 	console.log('init', init);
+		
+	// 	return { props: { req }};
+	// }
+	// catch (err) {
+	// 	return console.log(err);
+	// }
+}

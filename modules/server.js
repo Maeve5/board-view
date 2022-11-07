@@ -1,26 +1,21 @@
 import axios from "axios";
+import API from '../modules/api';
 
-export const server = async ({ req, method, uri, body }) => {
-	// console.log('url', req);
-	// console.log('method', method);
-	// console.log('uri', uri);
+export const server = async ({ req }) => {
 	let data = {
 		success: null,
 		isLogin: null,
-		token: null,
-		userKey: null,
-		id: null,
-		name: null,
-		user: null,
-		result: null,
+		user: {
+			userKey: null,
+			id: null,
+			name: null,
+			token: null
+		},
+		result: null
 	};
 
-	const token = req.cookies.cookie ? req.cookies.cookie : null;
-	// console.log('token', token);
-
-	data = {
-		...data, token,
-	};
+	const token = req.cookies.cookie ? req.cookies.cookie : '';
+	console.log('servertoken', !token);
 
 	try {
 		// if (token === null) {
@@ -28,33 +23,32 @@ export const server = async ({ req, method, uri, body }) => {
 		// }
 
 		// if (uri)
-		const res = await axios({
-			url: uri,
-			method: method,
-			data: body,
-			baseURL: 'http://localhost:8082',
-			headers: {
-				'Authorization': req.cookies.cookie ? req.cookies.cookie : '',
-				'Accept': 'Application/json',
-				'Content-Type': 'application/json',
-			},
-			withCredentials: true,
-		})
+		if (token) {
+			API.defaults.headers.common['Authorization'] = token ? token : '';
+		}
+		const res = await API.post('/v1/auth/token');
+
 		const { success, isLogin, user, result } = await res.data;
-		// console.log('res.data', res.data);
 
 		data = {
 			...data,
 			success: success,
 			isLogin: isLogin,
-			user,
-			result
+			user: user ? user : null,
+			result: result
 		};
 
-		// console.log('data', data);
+		console.log('datalogin', data.isLogin);
 		return data;
 	}
 	catch (err) {
+		console.log('err??', err);
+		// data = {
+		// 	success: err.response.data.success,
+		// 	isLogin: err.response.data.isLogin,
+		// 	errCode: err.response.status,
+		// 	message: err.response.data.message
+		// }
 		return data;
 	}
 }

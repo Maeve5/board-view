@@ -1,32 +1,48 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { router } from 'next/router';
 import { server } from '../../modules/server';
 import API from '../../modules/api';
-import axios from "axios";
 import TopHeader from '../../components/global/TopHeader';
 import Post from '../../components/list/Post';
 import { Button, Modal } from 'antd';
+import { AXIOS } from '../../modules/axios';
 
-function ListKey({ success, user, result, listKey }) {
+function ListKey({ success, isLogin, user, listKey }) {
 
+	const [loading, setLoading] = useState(false);
+	const [result, setResult] = useState({});
+	const token = user.token;
+	
+	useEffect(() => {
+		AXIOS(`/v1/list/${listKey}`, 'get', null, token)
+		.then((response) => {
+			setResult(response);
+			console.log(result);
+			return result;
+		})
+	}, []);
+
+	useEffect(() => {
+		setLoading(true);
+		if (result) {
+			setLoading(false);
+		}
+		else {
+			setLoading(true);
+		}
+	}, [loading]);
+	
 	// 삭제
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
+	const onDelete = useCallback(async () => {
 
-	const onDelete = useCallback (async () => {
-		
 		try {
-			await axios({
-				url: `/v1/list/${listKey}`,
-				method: 'delete',
-				baseURL: 'http://localhost:8082',
-				headers: {
-					'Authorization': user.token,
-					'Accept': 'Application/json',
-					'Content-Type': 'application/json',
-				},
-				withCredentials: true,
-			});
+			// header에 token 추가
+			API.defaults.headers.common['Authorization'] = token;
+			// 삭제
+			await API.delete(`/v1/list/${listKey}`);
+			// 삭제 후 페이지 이동
 			router.push(`/list`);
 		}
 		catch (error) {
@@ -36,7 +52,7 @@ function ListKey({ success, user, result, listKey }) {
 
 	return (
 		<>
-			<TopHeader user={user} />
+			<TopHeader user={user} isLogin={isLogin} />
 
 			<Post result={result} />
 
@@ -64,23 +80,22 @@ function ListKey({ success, user, result, listKey }) {
 export default React.memo(ListKey);
 
 export const getServerSideProps = async ({ req, params }) => {
+
 	let listKey = params.listKey;
-	const method = 'get';
-	const uri = `/v1/list/${params.listKey}`;
-	// console.log(req);
-	let init = await server({ req, method, uri });
-	// console.log('init', init);
-	const { success, isLogin, user, result } = init;
+	let init = await server({ req });
+	const { success, isLogin, user } = init;
 
 	if (isLogin) {
-		return { props: { success, user, result, listKey }};
+		return { props: { success, isLogin, user, listKey } };
 	}
 	else {
 		return {
 			redirect: {
 				permanent: false,
-				destination: '/auth/login'
+				destination: '/auth/login',
+				errorMessage: init.message ? init.message : ''
 			}
 		};
 	}
+
 }

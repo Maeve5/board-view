@@ -33,7 +33,7 @@ function Posts({ postArr, firstPost, loading }) {
 									</Link>
 								</td>
 								<td width='17%'>{row.name}</td>
-								<td width='20%'>{row.time}</td>
+								<td width='20%'>{row.createdTime}</td>
 							</tr>
 						)
 					})
