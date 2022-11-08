@@ -8,10 +8,13 @@ import { Button, Modal } from 'antd';
 
 function ListKey({ success, isLogin, user, listKey }) {
 
-	const [loading, setLoading] = useState(false);
+	// const [loading, setLoading] = useState(false);
 	const [result, setResult] = useState({});
 	const token = user.token;
+
+	// if(!token)
 	
+	// 단일 게시글 조회
 	useEffect(() => {
 		AXIOS(`/v1/list/${listKey}`, 'get', token)
 		.then((response) => {
@@ -20,23 +23,25 @@ function ListKey({ success, isLogin, user, listKey }) {
 		})
 	}, []);
 
-	useEffect(() => {
-		setLoading(true);
-		if (result) {
-			setLoading(false);
-		}
-		else {
-			setLoading(true);
-		}
-	}, [result]);
+	// useEffect(() => {
+	// 	setLoading(true);
+	// 	if (result) {
+	// 		setLoading(false);
+	// 	}
+	// 	else {
+	// 		setLoading(true);
+	// 	}
+	// }, [result]);
 	
 	// 삭제
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	const onDelete = useCallback(async () => {
 		try {
-			AXIOS(`/v1/list/${listKey}`,'delete', token)
-			.then((response) => router.push(`/list`));
+			AXIOS(`/v1/list/${listKey}`, 'delete', token)
+			.then((response) => {
+				router.push(`/list`);
+			});
 		}
 		catch (error) {
 			console.log('onDelete 에러', error);
@@ -90,5 +95,4 @@ export const getServerSideProps = async ({ req, params }) => {
 			}
 		};
 	}
-
-}
+};

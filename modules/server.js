@@ -1,6 +1,4 @@
 import API from '../modules/api';
-import { useSetRecoilState } from 'recoil';
-import loginState from '../atom/loginState';
 
 export const server = async ({ req }) => {
 	let data = {
@@ -23,10 +21,8 @@ export const server = async ({ req }) => {
 		// }
 
 		// if (uri)
+		// header에 token 추가
 		if (token) {
-		console.log('servertoken', token);
-
-			// header에 token 추가
 			API.defaults.headers.common['Authorization'] = token ? token : '';
 		}
 
@@ -41,10 +37,6 @@ export const server = async ({ req }) => {
 			user: user ? user : null,
 			result: result
 		};
-
-		// 헤더 로그인 상태 관리
-		const setLogin = useSetRecoilState(loginState);
-		setLogin(data.isLogin);
 
 		return data;
 	}

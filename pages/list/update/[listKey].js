@@ -1,21 +1,37 @@
-import React, { useState, useCallback } from 'react';
-import { router, useRouter } from 'next/router';
+import React, { useState, useCallback, useEffect } from 'react';
+import { router } from 'next/router';
 import TopHeader from '../../../components/global/TopHeader';
 import API from '../../../modules/api';
 import axios from "axios";
+import { AXIOS } from '../../../modules/axios';
 import { server } from '../../../modules/server';
 import { Input, Button } from 'antd';
 const { TextArea } = Input;
 
-function Update({ req, success, user, result, listKey }) {
-	console.log('user', user);
+function Update({ req, success, user, listKey }) {
 	
-	// const query = useRouter().query;
-	// query: { title, description, listKey }
-	
-	const [title, setTitle] = useState(result.title);
-	const [description, setDescription] = useState(result.description);
+	const [result, setResult] = useState({});
+	const [title, setTitle] = useState('');
+	const [description, setDescription] = useState('');
+	const token = user.token;
 
+	// 단일 게시글 조회
+	useEffect(() => {
+		AXIOS(`/v1/list/${listKey}`, 'get', token)
+		.then((response) => {
+			setResult(response);
+			return result;
+		})
+	}, []);
+
+	useEffect(() => {
+		if (result) {
+			setTitle(result.title);
+			setDescription(result.description);
+		}
+	}, [result]);
+
+	// 수정
 	const onUpdate = useCallback (async () => {
 
 		if ( !title || !description ) {
@@ -24,32 +40,14 @@ function Update({ req, success, user, result, listKey }) {
 		}
 
 		try {
-			await axios({
-				url: `/v1/list/${listKey}`,
-				method: 'patch',
-				data: {
-					title: title,
-					description: description
-				},
-				baseURL: 'http://localhost:8082',
-				headers: {
-					'Authorization': user.token,
-					'Accept': 'Application/json',
-					'Content-Type': 'application/json',
-				},
-				withCredentials: true,
+			API.defaults.headers.common['Authorization'] = user.token;
+			await API.patch(`/v1/list/${listKey}`, {
+				title: title,
+				description: description
+			}).then((response) => {
+				alert('수정되었습니다.');
+				router.push(`/list/${listKey}`);
 			});
-			// await API.patch(`/v1/list/${query.listKey}`, {
-			// 	title: title,
-			// 	description: description
-			// },
-			// {headers: {
-			// 	'Authorization': req.cookies.cookie ? req.cookies.cookie : '',
-			// 	'Accept': 'Application/json',
-			// 	'Content-Type': 'application/json',
-			// }}
-			// );
-			router.push(`/list/${listKey}`);
 		}
 		catch (error) {
 			console.log('onUpdate 에러', error);
@@ -104,24 +102,21 @@ function Update({ req, success, user, result, listKey }) {
 export default React.memo(Update);
 
 export const getServerSideProps = async ({ req, params }) => {
-	console.log('req', req);
+
 	let listKey = params.listKey;
-	const method = 'get';
-	const uri = `/v1/list/${params.listKey}`;
-	// console.log(req);
-	let init = await server({ req, method, uri });
-	// console.log('init', init);
+	let init = await server({ req });
 	const { success, isLogin, user, result } = init;
 
 	if (isLogin) {
-		return { props: { success, user, result, listKey }};
+		return { props: { success, isLogin, user, result, listKey } };
 	}
 	else {
 		return {
 			redirect: {
 				permanent: false,
-				destination: '/auth/login'
+				destination: '/auth/login',
+				errorMessage: init.message ? init.message : ''
 			}
 		};
 	}
-}
+};

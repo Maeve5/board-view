@@ -7,7 +7,7 @@ import API from '../../modules/api';
 import { Button, Input } from 'antd';
 import { EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons';
 
-function LoginPage({ token }) {
+function LoginPage() {
 
 	const [id, setId] = useState('');
 	const [password, setPassword] = useState('');
@@ -29,13 +29,12 @@ function LoginPage({ token }) {
 			// 로그인 성공
 			if (res.data.success) {
 				setIsLogin(true);
-				console.log('logintoken', token);
 				alert('로그인 성공');
 				router.replace('/list');
 			}
 			// 로그인 실패
 			else {
-				// if (!result2)
+				// '비밀번호가 틀렸습니다.'
 				alert(res.data.message);
 			}
 		}
@@ -94,20 +93,9 @@ function LoginPage({ token }) {
 
 export default React.memo(LoginPage);
 
-export const getServerSideProps = async ({ req }) => {
-	console.log('reqLogin', !req.cookies.cookie);
-	const token = { cookies: req.cookies.cookie ? req.cookies.cookie : '' };
-	return { props : { token }};
-	// try {
-	// 	const method = 'get';
-	// 	const uri = `/v1/list`;
-	// 	let init = await server({ req, method, uri });
-	// 	const { success, isLogin, user, result } = init;
-	// 	console.log('init', init);
-		
-	// 	return { props: { req }};
-	// }
-	// catch (err) {
-	// 	return console.log(err);
-	// }
-}
+// export const getServerSideProps = async ({ req }) => {
+	
+// 	const token = { cookies: req.cookies.cookie ? req.cookies.cookie : '' };
+
+// 	return { props : { token }};
+// };

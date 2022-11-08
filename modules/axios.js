@@ -9,6 +9,7 @@ export const AXIOS = async (url, method, token, body) => {
 		// header에 token 추가
 		API.defaults.headers.common['Authorization'] = token;
 		
+		// get, delete 요청
 		if (method === 'get' || 'delete') {
 			const res = await API({
 				url: url,
@@ -18,18 +19,8 @@ export const AXIOS = async (url, method, token, body) => {
 			console.log('nobodydata', data);
 			return data;
 		}
+		// post, patch, put 요청
 		else {
-		// 	axios({
-		// 		method: method,
-		// 		url: url,
-		// 		body: 'vvvvv',
-		// 		baseURL: 'http://localhost:8082',
-		// 		headers: {
-		// 			'Accept': 'Application/json',
-		// 			'Content-Type': 'application/json',
-		// 		},
-		// 		withCredentials: true,
-		// 	});
 			const res = await API({
 				url: url,
 				method: method,

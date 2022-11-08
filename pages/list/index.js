@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { router } from 'next/router';
 import TopHeader from '../../components/global/TopHeader';
+import { useSetRecoilState } from 'recoil';
+import loginState from '../../atom/loginState';
 import { Button, Pagination } from 'antd';
 import Posts from '../../components/list/Posts';
 import { server } from '../../modules/server';
 
 function ListPage({ success, isLogin, user, result }) {
+
+	// 헤더 로그인 상태 관리
+	const setLogin = useSetRecoilState(loginState);
+	console.log('serverlogin', isLogin);
+	setLogin(isLogin);
 	
 	// 페이지네이션
 	const [posts, setPosts] = useState([]);
