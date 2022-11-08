@@ -1,11 +1,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { router } from 'next/router';
-import { server } from '../../modules/server';
-import API from '../../modules/api';
 import TopHeader from '../../components/global/TopHeader';
 import Post from '../../components/list/Post';
-import { Button, Modal } from 'antd';
+import { server } from '../../modules/server';
 import { AXIOS } from '../../modules/axios';
+import { Button, Modal } from 'antd';
 
 function ListKey({ success, isLogin, user, listKey }) {
 
@@ -14,10 +13,9 @@ function ListKey({ success, isLogin, user, listKey }) {
 	const token = user.token;
 	
 	useEffect(() => {
-		AXIOS(`/v1/list/${listKey}`, 'get', null, token)
+		AXIOS(`/v1/list/${listKey}`, 'get', token)
 		.then((response) => {
 			setResult(response);
-			console.log(result);
 			return result;
 		})
 	}, []);
@@ -30,20 +28,15 @@ function ListKey({ success, isLogin, user, listKey }) {
 		else {
 			setLoading(true);
 		}
-	}, [loading]);
+	}, [result]);
 	
 	// 삭제
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	const onDelete = useCallback(async () => {
-
 		try {
-			// header에 token 추가
-			API.defaults.headers.common['Authorization'] = token;
-			// 삭제
-			await API.delete(`/v1/list/${listKey}`);
-			// 삭제 후 페이지 이동
-			router.push(`/list`);
+			AXIOS(`/v1/list/${listKey}`,'delete', token)
+			.then((response) => router.push(`/list`));
 		}
 		catch (error) {
 			console.log('onDelete 에러', error);
@@ -52,7 +45,7 @@ function ListKey({ success, isLogin, user, listKey }) {
 
 	return (
 		<>
-			<TopHeader user={user} isLogin={isLogin} />
+			<TopHeader user={user} />
 
 			<Post result={result} />
 

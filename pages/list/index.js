@@ -6,7 +6,7 @@ import Posts from '../../components/list/Posts';
 import { server } from '../../modules/server';
 
 function ListPage({ success, isLogin, user, result }) {
-
+	
 	// 페이지네이션
 	const [posts, setPosts] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -20,7 +20,6 @@ function ListPage({ success, isLogin, user, result }) {
 			setPosts(result);
 			setLoading(false);
 		}
-
 		fetchPosts();
 	}, []);
 
@@ -31,7 +30,7 @@ function ListPage({ success, isLogin, user, result }) {
 	return (
 		<>
 			{/* 헤더 */}
-			<TopHeader user={user} isLogin={isLogin} />
+			<TopHeader user={user} />
 
 			<div className='list'>
 				<div className='button' style={{ float: 'right', margin: '0 20px 10px 0' }}>

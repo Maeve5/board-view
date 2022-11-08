@@ -1,32 +1,25 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import router from 'next/router';
 import { useRecoilState } from 'recoil';
 import loginState from '../../atom/loginState';
-import axios from "axios";
-import API from '../../modules/api';
+import { AXIOS } from '../../modules/axios';
 import { Button, Layout, Menu, Modal } from 'antd';
-const { Header, Content, Footer } = Layout;
+const { Header } = Layout;
 
-function TopHeader({ user, isLogin }) {
+function TopHeader({ user }) {
 
 	const [login, setLogin] = useRecoilState(loginState);
-	console.log('login', login);
-
-	// 로그인 상태 유지
-	useEffect(() => {
-		if (isLogin) {
-			setLogin(true);
-		}
-	}, []);
 	
 	// 로그아웃
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	const onLogout = useCallback(async () => {
-		setLogin(false);
-		await API.post(`/v1/auth/logout`);
-		router.reload('/list');
-	}, []);
+		await AXIOS(`/v1/auth/logout`, 'post')
+		.then((response) => {
+			setLogin(false);
+			router.push('/list');
+		});
+	}, [setLogin]);
 
 	return (
 		<>

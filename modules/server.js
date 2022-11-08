@@ -1,5 +1,6 @@
-import axios from "axios";
 import API from '../modules/api';
+import { useSetRecoilState } from 'recoil';
+import loginState from '../atom/loginState';
 
 export const server = async ({ req }) => {
 	let data = {
@@ -15,7 +16,6 @@ export const server = async ({ req }) => {
 	};
 
 	const token = req.cookies.cookie ? req.cookies.cookie : '';
-	console.log('servertoken', !token);
 
 	try {
 		// if (token === null) {
@@ -24,8 +24,12 @@ export const server = async ({ req }) => {
 
 		// if (uri)
 		if (token) {
+		console.log('servertoken', token);
+
+			// header에 token 추가
 			API.defaults.headers.common['Authorization'] = token ? token : '';
 		}
+
 		const res = await API.post('/v1/auth/token');
 
 		const { success, isLogin, user, result } = await res.data;
@@ -38,7 +42,10 @@ export const server = async ({ req }) => {
 			result: result
 		};
 
-		console.log('datalogin', data.isLogin);
+		// 헤더 로그인 상태 관리
+		const setLogin = useSetRecoilState(loginState);
+		setLogin(data.isLogin);
+
 		return data;
 	}
 	catch (err) {

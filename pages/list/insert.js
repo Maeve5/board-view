@@ -1,16 +1,16 @@
 import React, { useState, useCallback } from 'react';
 import { router } from 'next/router';
 import TopHeader from '../../components/global/TopHeader';
-import API from '../../modules/api';
-import axios from "axios";
 import { server } from '../../modules/server';
 import { Input, Button } from 'antd';
+import { AXIOS } from '../../modules/axios';
 const { TextArea } = Input;
 
 function InsertPage({ success, isLogin, user }) {
 
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
+	const token = user.token;
 
 	// 데이터 추가
 	const onInsert = useCallback(async () => {
@@ -21,13 +21,22 @@ function InsertPage({ success, isLogin, user }) {
 		}
 
 		try {
-			API.defaults.headers.common['Authorization'] = user.token;
-			await API.post(`/v1/list`, {
+			AXIOS(`/v1/list`, 'post', token, {
 				title: title,
 				description: description,
 				userKey: user.userKey,
+			}).then((response) => {
+				alert(`[${response.errCode}]\n${response.message}`);
+				// [500] 게시글 등록에 문제가 있습니다. 관리자에게 문의해주세요.
+				// router.push('/list')
 			});
-			router.push('/list');
+			// API.defaults.headers.common['Authorization'] = user.token;
+			// await API.post(`/v1/list`, {
+			// 	title: title,
+			// 	description: description,
+			// 	userKey: user.userKey,
+			// });
+			// router.push('/list');
 		}
 		catch (err) {
 			console.log('onInsert 에러', err);
@@ -36,7 +45,7 @@ function InsertPage({ success, isLogin, user }) {
 
 	return (
 		<>
-			<TopHeader user={user} isLogin={isLogin} />
+			<TopHeader user={user} />
 
 			<div className='insertpage'>
 				<div className='item'>
@@ -84,7 +93,7 @@ export default React.memo(InsertPage);
 
 export const getServerSideProps = async ({ req }) => {
 	let init = await server({ req });
-	const { success, isLogin, user, result } = init;
+	const { success, isLogin, user } = init;
 
 	if (isLogin) {
 		return { props: { success, isLogin, user }};
