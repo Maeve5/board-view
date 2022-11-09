@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import TopHeader from '../../../components/global/TopHeader';
-import MyPageGroup from '../../../components/mypage/MyPageGroup';
+import MyPageGroup from '../../../components/mypage/MyPageGroupCopy';
 import MyInfoEditCheck from '../../../components/mypage/MyInfoEditCheck';
 import MyInfoEdit from '../../../components/mypage/MyInfoEdit';
 import { server } from '../../../modules/server';

@@ -7,12 +7,19 @@ const { Header } = Layout;
 
 function TopHeader({ user, isLogin }) {
 
+	// 로그인 상태
 	const [login, setLogin] = useState(false);
-	const [selectedKeys, setSelectedKeys] = useState('');
 
+	// 메뉴 활성화
+	const [selectedKeys, setSelectedKeys] = useState('');
+	
+	// 로그인 상태, 메뉴 활성화
 	useEffect(() => {
+		let path = router.pathname.slice(1);
+		
 		if(isLogin) {
 			setLogin(true);
+			setSelectedKeys(path);
 		}
 	}, []);
 	
@@ -46,10 +53,10 @@ function TopHeader({ user, isLogin }) {
 							style={{ flex: 1 }}
 							theme="light"
 							mode="horizontal"
-							// defaultSelectedKeys={['list']}
+							defaultSelectedKeys={['list']}
 							selectedKeys={selectedKeys}
 							onClick={(e) => router.push(`/${e.key}`)}
-							onSelect={(e) => setSelectedKeys(e.key)}
+							// onSelect={(e) => setSelectedKeys(e.key)}
 							items={[
 								{
 									key: 'list',

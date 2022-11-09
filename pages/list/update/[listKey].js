@@ -21,7 +21,7 @@ function Update({ req, success, isLogin, user, listKey }) {
 		.then((response) => {
 			setResult(response);
 			return result;
-		})
+		});
 	}, []);
 
 	useEffect(() => {
