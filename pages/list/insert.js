@@ -28,8 +28,8 @@ function InsertPage({ success, isLogin, user }) {
 			// 	userKey: user.userKey,
 			// }).then((response) => {
 			// 	alert(`[${response.errCode}]\n${response.message}`);
-				// [500] 게시글 등록에 문제가 있습니다. 관리자에게 문의해주세요.
-				// router.push('/list')
+			// 	// [500] 게시글 등록에 문제가 있습니다. 관리자에게 문의해주세요.
+			// 	router.push('/list')
 			// });
 			API.defaults.headers.common['Authorization'] = user.token;
 			await API.post(`/v1/list`, {
@@ -46,7 +46,7 @@ function InsertPage({ success, isLogin, user }) {
 
 	return (
 		<>
-			<TopHeader user={user} />
+			<TopHeader user={user} isLogin={isLogin} />
 
 			<div className='insertpage'>
 				<div className='item'>

@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { router } from 'next/router';
 import { server } from '../../modules/server';
 import TopHeader from '../../components/global/TopHeader';
-import MyPageGroup from '../../components/mypage/MyPageGroup';
+import MyPageGroup from '../../components/mypage/MyPageGroupCopy';
 import { Menu } from 'antd';
 
-function MyPage({ user }) {
+function MyPage({ isLogin, user }) {
 
 	return (
 		<>
+			<TopHeader user={user} isLogin={isLogin} />
 			<MyPageGroup user={user} />
 		</>
 	);

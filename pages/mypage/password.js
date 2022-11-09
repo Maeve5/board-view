@@ -6,7 +6,7 @@ import TopHeader from '../../components/global/TopHeader';
 import { Button, Input } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 
-const MyEditPage = ({user}) => {
+const MyEditPage = ({user, isLogin}) => {
 
 	const [name, setName] = useState(user.name);
 	const [password, setPassword] = useState('');
@@ -57,7 +57,7 @@ const MyEditPage = ({user}) => {
 
 	return (
 		<>
-			<TopHeader user={user} />
+			<TopHeader user={user} isLogin={isLogin} />
 
 			<div className='mypage'>
 				<div className='input'>
@@ -124,15 +124,12 @@ const MyEditPage = ({user}) => {
 export default React.memo(MyEditPage);
 
 export const getServerSideProps = async ({ req }) => {
-	// console.log(req.cookies);
-	const method = 'get';
-	const uri = `/v1/user`;
-	let init = await server({ req, method, uri });
-	// console.log('init', init);
+
+	let init = await server({ req });
 	const { success, isLogin, user } = init;
 
 	if (isLogin) {
-		return { props: { success, user }};
+		return { props: { success, isLogin, user }};
 	}
 	else {
 		return {

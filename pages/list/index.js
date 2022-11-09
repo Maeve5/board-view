@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { router } from 'next/router';
 import TopHeader from '../../components/global/TopHeader';
-import { useSetRecoilState } from 'recoil';
-import loginState from '../../atom/loginState';
 import { Button, Pagination } from 'antd';
 import Posts from '../../components/list/Posts';
 import { server } from '../../modules/server';
 
 function ListPage({ success, isLogin, user, result }) {
-
-	// 헤더 로그인 상태 관리
-	const setLogin = useSetRecoilState(loginState);
-	console.log('serverlogin', isLogin);
-	setLogin(isLogin);
 	
 	// 페이지네이션
 	const [posts, setPosts] = useState([]);
@@ -37,7 +30,7 @@ function ListPage({ success, isLogin, user, result }) {
 	return (
 		<>
 			{/* 헤더 */}
-			<TopHeader user={user} />
+			<TopHeader user={user} isLogin={isLogin} />
 
 			<div className='list'>
 				<div className='button' style={{ float: 'right', margin: '0 20px 10px 0' }}>
@@ -73,6 +66,29 @@ export const getServerSideProps = async ({ req }) => {
 		return { props: { success, isLogin, user, result }};
 	}
 	catch (err) {
-		return console.log(err);
+		console.log('index', err.response.status);
+		let error = {};
+		if (err.response.status === 500) {
+			error = {
+				redirect: {
+					permanent: false,
+					destination: '/500'
+				}
+			}
+		}
+		else if (err.response.status === 400 || 401 || 404 || 419 ) {
+			error = {
+				
+			}
+		}
+		else {
+			error = {
+				redirect: {
+					permanent: false,
+					destination: '/404'
+				}
+			}
+		}
+		return error;
 	}
 };

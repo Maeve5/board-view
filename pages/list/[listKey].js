@@ -50,7 +50,7 @@ function ListKey({ success, isLogin, user, listKey }) {
 
 	return (
 		<>
-			<TopHeader user={user} />
+			<TopHeader user={user} isLogin={isLogin} />
 
 			<Post result={result} />
 

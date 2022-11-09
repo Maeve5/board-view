@@ -1,13 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
+import TopHeader from '../../../components/global/TopHeader';
 import MyPageGroup from '../../../components/mypage/MyPageGroup';
-import MyInfoEdit from '../../../components/mypage/MyInfoEdit'
+import MyInfoEditCheck from '../../../components/mypage/MyInfoEditCheck';
+import MyInfoEdit from '../../../components/mypage/MyInfoEdit';
 import { server } from '../../../modules/server';
 
-function MyInfoEditPage({ user }) {
+function MyInfoEditPage({ user, isLogin }) {
+	
+	const [passwordCheck, setpasswordCheck] = useState(false);
+
 	return (
-		<MyPageGroup user={user}>
-			<MyInfoEdit user={user} />
-		</MyPageGroup>
+		<>
+			<TopHeader user={user} isLogin={isLogin} />
+			<MyPageGroup user={user}>
+				{passwordCheck ? <MyInfoEdit user={user} />	: <MyInfoEditCheck user={user} />}
+			</MyPageGroup>
+		</>
 	)
 };
 

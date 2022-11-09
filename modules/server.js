@@ -21,10 +21,9 @@ export const server = async ({ req }) => {
 		// }
 
 		// if (uri)
+
 		// header에 token 추가
-		if (token) {
-			API.defaults.headers.common['Authorization'] = token ? token : '';
-		}
+		API.defaults.headers.common['Authorization'] = token ? token : '';
 
 		const res = await API.post('/v1/auth/token');
 
@@ -34,20 +33,13 @@ export const server = async ({ req }) => {
 			...data,
 			success: success,
 			isLogin: isLogin,
-			user: user ? user : null,
+			user: user,
 			result: result
 		};
 
 		return data;
 	}
 	catch (err) {
-		console.log('err??', err);
-		// data = {
-		// 	success: err.response.data.success,
-		// 	isLogin: err.response.data.isLogin,
-		// 	errCode: err.response.status,
-		// 	message: err.response.data.message
-		// }
-		return data;
+		throw err;
 	}
 }

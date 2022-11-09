@@ -8,7 +8,7 @@ import { server } from '../../../modules/server';
 import { Input, Button } from 'antd';
 const { TextArea } = Input;
 
-function Update({ req, success, user, listKey }) {
+function Update({ req, success, isLogin, user, listKey }) {
 	
 	const [result, setResult] = useState({});
 	const [title, setTitle] = useState('');
@@ -56,7 +56,7 @@ function Update({ req, success, user, listKey }) {
 
 	return (
 		<>
-			<TopHeader user={user} />
+			<TopHeader user={user} isLogin={isLogin} />
 
 			<div className='insertpage'>
 				<div className='item'>

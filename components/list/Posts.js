@@ -1,12 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { Spin } from 'antd';
 
-function Posts({ postArr, firstPost, loading }) {
-
-	if (loading) {
-		return <Spin style={{margin: '0 auto'}} tip="Loading..." />
-	}
+function Posts({ postArr, firstPost }) {
 
 	return (
 		<table className='container'>

@@ -1,25 +1,28 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import router from 'next/router';
-import { useRecoilState } from 'recoil';
-import loginState from '../../atom/loginState';
+import API from '../../modules/api';
 import { AXIOS } from '../../modules/axios';
 import { Button, Layout, Menu, Modal } from 'antd';
 const { Header } = Layout;
 
-function TopHeader({ user }) {
+function TopHeader({ user, isLogin }) {
 
-	const [login, setLogin] = useRecoilState(loginState);
+	const [login, setLogin] = useState(false);
+	const [selectedKeys, setSelectedKeys] = useState('');
+
+	useEffect(() => {
+		if(isLogin) {
+			setLogin(true);
+		}
+	}, []);
 	
 	// 로그아웃
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	const onLogout = useCallback(async () => {
-		await AXIOS(`/v1/auth/logout`, 'post')
-		.then((response) => {
-			setLogin(false);
-			router.push('/list');
-		});
-	}, [setLogin]);
+		const res = await API.post(`/v1/auth/logout`);
+		router.push('/list');
+	}, []);
 
 	return (
 		<>
@@ -43,8 +46,10 @@ function TopHeader({ user }) {
 							style={{ flex: 1 }}
 							theme="light"
 							mode="horizontal"
-							// defaultSelectedKeys={}
+							// defaultSelectedKeys={['list']}
+							selectedKeys={selectedKeys}
 							onClick={(e) => router.push(`/${e.key}`)}
+							onSelect={(e) => setSelectedKeys(e.key)}
 							items={[
 								{
 									key: 'list',

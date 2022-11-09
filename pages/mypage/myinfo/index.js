@@ -1,13 +1,17 @@
 import React from 'react';
+import TopHeader from '../../../components/global/TopHeader';
 import MyPageGroup from '../../../components/mypage/MyPageGroup';
 import MyInfo from '../../../components/mypage/MyInfo'
 import { server } from '../../../modules/server';
 
-function MyInfoPage({ user }) {
+function MyInfoPage({ user, isLogin }) {
 	return (
-		<MyPageGroup user={user}>
-			<MyInfo user={user} />
-		</MyPageGroup>
+		<>
+			<TopHeader user={user} isLogin={isLogin} />
+			<MyPageGroup user={user}>
+				<MyInfo user={user} />
+			</MyPageGroup>
+		</>
 	)
 };
 

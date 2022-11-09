@@ -30,7 +30,8 @@ function LoginPage() {
 			if (res.data.success) {
 				setIsLogin(true);
 				alert('로그인 성공');
-				router.replace('/list');
+				// router.replace('/list');
+				router.back();
 			}
 			// 로그인 실패
 			else {
