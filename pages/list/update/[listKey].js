@@ -75,9 +75,9 @@ function Update({ req, success, isLogin, user, listKey }) {
 					<div className='title'>내용</div>
 					<div className='input'>
 						<TextArea
-							rows={4}
+							maxLength={100}
 							placeholder='내용을 입력해 주세요.'
-							style={{ resize: 'none' }}
+							style={{ minHeight: 285, resize: 'none' }}
 							value={description}
 							onChange={(e) => setDescription(e.target.value)}
 						/>
@@ -89,7 +89,7 @@ function Update({ req, success, isLogin, user, listKey }) {
 			</div>
 
 			<style jsx>{`
-			.insertpage { margin: 100px auto; max-width: 800px; width: 80%; }
+			.insertpage { margin: 100px auto; max-width: 800px; min-width: 600px; width: 80%; }
 			.item { margin: 10px 0; display: flex; align-items: center; justify-content: center; }
 			.title { flex: 1; text-align: center; }
 			.input { flex: 8; }

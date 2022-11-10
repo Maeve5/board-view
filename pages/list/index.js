@@ -6,7 +6,7 @@ import Posts from '../../components/list/Posts';
 import { server } from '../../modules/server';
 
 function ListPage({ success, isLogin, user, result }) {
-	
+
 	// 페이지네이션
 	const [posts, setPosts] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -48,7 +48,7 @@ function ListPage({ success, isLogin, user, result }) {
 			</div>
 
 			<style jsx>{`
-			.list { margin: 100px auto; max-width: 800px; width: 80%; }
+			.list { margin: 100px auto; max-width: 800px; min-width: 600px; width: 80%; }
 			.pagination { display: flex; align-items: center; justify-content: center; }
 			`}</style>
 		</>
@@ -62,7 +62,6 @@ export const getServerSideProps = async ({ req }) => {
 	try {
 		let init = await server({ req });
 		const { success, isLogin, user, result } = init;
-		
 		return { props: { success, isLogin, user, result }};
 	}
 	catch (err) {
@@ -90,5 +89,11 @@ export const getServerSideProps = async ({ req }) => {
 			}
 		}
 		return error;
+		// return {
+		// 	redirect: {
+		// 		permanent: false,
+		// 		destination: '/404'
+		// 	}
+		// }
 	}
 };

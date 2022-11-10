@@ -1,52 +1,60 @@
-import React from 'react';
-import { router } from 'next/router';
-import { Layout, Menu } from 'antd';
-const { Header, Content, Sider } = Layout;
+import React, { useState, useEffect, useCallback } from 'react';
+import { Layout, Tabs } from 'antd';
+import MyInfo from './Myinfo';
+import MyPassword from './MyPassword';
+import MyPostsGroup from './MyPostsGroup';
+import DeleteUser from './DeleteUser';
 
-function MyPageGroup({ children }) {
+function MyPageGroup({ user }) {
+
+	// 탭 아이템
+	const items = [
+			{
+				label: '내 정보',
+				key: 'myinfo',
+				children: <MyInfo user={user} />
+			},
+			{
+				label: '비밀번호 변경',
+				key: 'password',
+				children: <MyPassword user={user} />
+			},
+			{
+				label: '내가 쓴 글',
+				key: 'history',
+				children: <MyPostsGroup user={user} />
+			},
+			{
+				label: '탈퇴하기',
+				key: 'delete',
+				children: <DeleteUser user={user} />
+			}
+		];
+
+	// 탭 활성화
+	// const [activeKey, setActiveKey] = useState('myinfo');
+
+	// useEffect(() => {
+	// 	let key = localStorage.getItem('TabKey');
+	// 	console.log('key', key);
+	// 	setActiveKey(key);
+	// }, []);
+
+	// const onSaveTabKey = useCallback((e) => {
+	// 	localStorage.setItem('TabKey', e);
+	// }, [activeKey]);
+	
+
 	return (
 		<>
-			<Layout style={{ margin: '64px auto', paddingTop: 24, MaxWidth: 800, width: '70%', background: 'white' }}>
-				<Sider width={128} style={{ background: 'white' }}>
-					<Menu
-						style={{ width: 128 }}
-						mode='inline'
-						defaultSelectedKeys={['myinfo']}
-						onClick={(e) => router.push(`/mypage/${e.key}`)}
-						items={[
-							{
-								key: '',
-								label: '내 정보'
-							},
-							{
-								key: 'password',
-								label: '비밀번호 변경'
-							},
-							{
-								key: 'history',
-								label: '내가 쓴 글'
-							},
-						]}
-					/>
-				</Sider>
-				<Layout
-					style={{
-						padding: '0 24px 24px',
-						background: 'white'
-					}}
-				>
-					<Content
-						className="site-layout-background"
-						style={{
-							padding: '0 24',
-							margin: 0,
-							minHeight: 280,
-							background: 'white'
-						}}
-					>
-						{children}
-					</Content>
-				</Layout>
+			{/* 마이페이지 */}
+			<Layout style={{ margin: '64px auto', paddingTop: 24, minWidth: 600, width: '70%', background: 'white' }}>
+				<Tabs
+					tabPosition='left'
+					defaultActiveKey='myinfo'
+					// activeKey={activeKey}
+					// onTabClick={onSaveTabKey}
+					items={items} />
 			</Layout>
 		</>
 	)

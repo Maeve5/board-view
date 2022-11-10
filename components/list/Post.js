@@ -41,9 +41,8 @@ function Post({ result }) {
 				<div className='title'>내용</div>
 				<div className='input'>
 					<TextArea
-						rows={4}
 						placeholder='내용을 입력해 주세요.'
-						style={{ resize: 'none' }}
+						style={{ minHeight: 285, resize: 'none' }}
 						value={result ? result.description : null}
 						readOnly={true}
 						bordered={false}
@@ -52,7 +51,7 @@ function Post({ result }) {
 			</div>
 
 			<style jsx>{`
-			.insertpage { margin: 100px auto; margin-bottom: 20px; max-width: 800px; width: 80%; }
+			.insertpage { margin: 100px auto; margin-bottom: 20px; max-width: 800px; min-width: 600px; width: 80%; }
 
 			.item-container { display: inline-flex; justify-content: space-between; max-width: 800px; width: 100%; }
 			.item1 { flex: 1; max-width: 400px; margin: 10px 0; display: flex; align-items: center; justify-content: center; border-top: 1px solid #aaa; border-bottom: 1px solid #aaa; }

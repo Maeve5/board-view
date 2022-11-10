@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { router } from 'next/router';
 import { server } from '../../modules/server';
 import TopHeader from '../../components/global/TopHeader';
-import MyPageGroup from '../../components/mypage/MyPageGroupCopy';
+import MyPageGroup from '../../components/mypage/MyPageGroup';
 import { Menu } from 'antd';
 
 function MyPage({ isLogin, user }) {

@@ -40,9 +40,10 @@ function TopHeader({ user, isLogin }) {
 						position: 'fixed',
 						zIndex: 500,
 						width: '100%',
+						minWidth: 600,
 						display: 'flex',
 						alignItems: 'center',
-						justifyContent: 'center',
+						justifyContent: 'center'
 					}}
 				>
 					<div className="header-content">
@@ -56,7 +57,6 @@ function TopHeader({ user, isLogin }) {
 							defaultSelectedKeys={['list']}
 							selectedKeys={selectedKeys}
 							onClick={(e) => router.push(`/${e.key}`)}
-							// onSelect={(e) => setSelectedKeys(e.key)}
 							items={[
 								{
 									key: 'list',

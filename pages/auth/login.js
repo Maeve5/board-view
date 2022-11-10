@@ -30,7 +30,6 @@ function LoginPage() {
 			if (res.data.success) {
 				setIsLogin(true);
 				alert('로그인 성공');
-				// router.replace('/list');
 				router.back();
 			}
 			// 로그인 실패
@@ -42,7 +41,7 @@ function LoginPage() {
 		catch (error) {
 			// if (result.length === 0)
 			console.log('onLogin 에러', error);
-			// alert(error.response.data.message);
+			alert(error.response.data.message);
 		}
 
 	}, [id, password]);

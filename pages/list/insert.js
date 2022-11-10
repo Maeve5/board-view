@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { router } from 'next/router';
 import TopHeader from '../../components/global/TopHeader';
 import { server } from '../../modules/server';
@@ -11,7 +11,13 @@ function InsertPage({ success, isLogin, user }) {
 
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
-	const token = user.token;
+	
+	// auto focus
+	const nameInput = useRef();
+
+	useEffect(() => {
+		nameInput.current.focus();
+	}, []);
 
 	// 데이터 추가
 	const onInsert = useCallback(async () => {
@@ -22,15 +28,6 @@ function InsertPage({ success, isLogin, user }) {
 		}
 
 		try {
-			// AXIOS(`/v1/list`, 'post', token, {
-			// 	title: title,
-			// 	description: description,
-			// 	userKey: user.userKey,
-			// }).then((response) => {
-			// 	alert(`[${response.errCode}]\n${response.message}`);
-			// 	// [500] 게시글 등록에 문제가 있습니다. 관리자에게 문의해주세요.
-			// 	router.push('/list')
-			// });
 			API.defaults.headers.common['Authorization'] = user.token;
 			await API.post(`/v1/list`, {
 				title: title,
@@ -56,6 +53,7 @@ function InsertPage({ success, isLogin, user }) {
 							type='text'
 							placeholder='제목을 입력해 주세요.'
 							style={{ display: 'block' }}
+							ref={nameInput}
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
 						/>
@@ -80,7 +78,7 @@ function InsertPage({ success, isLogin, user }) {
 			</div>
 
 			<style jsx>{`
-			.insertpage { margin: 100px auto; max-width: 800px; width: 80%; }
+			.insertpage { margin: 100px auto; max-width: 800px; min-width: 600px; width: 80%; }
 			.item { margin: 10px 0; display: flex; align-items: center; }
 			.title { flex: 1; text-align: center; }
 			.input { flex: 8; }
