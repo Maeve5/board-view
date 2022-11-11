@@ -23,6 +23,7 @@ function LoginPage() {
 				id: id,
 				password: password,
 			}).then((response) => {
+				// 로그인 성공
 				Modal.info({
 					title: '알림',
 					content: '로그인 성공',
@@ -31,20 +32,24 @@ function LoginPage() {
 			}).catch((error) => {
 				// 로그인 실패
 				if (error.response.status === 400) {
-					Modal.warning({ content: error.response.data });
+					Modal.warning({ content: error.response.data,
+					});
 				}
 				else {
 					Modal.error({
 						title: '오류',
 						content: error.response.data,
 					});
-				}
+				Modal.info({
+					title: '알림',
+					content: '로그인 성공',
+			})};
 			});
 		}
 		catch (error) {
 			Modal.error({
 				title: '오류',
-				content: '오류가 발생했습니다.\n관리자에게 문의해주세요.',
+				content: error.response.data,
 			});
 		}
 
@@ -55,6 +60,7 @@ function LoginPage() {
 			<TopHeader />
 
 			<div className='mypage'>
+				<form ></form>
 				<div className='item'>
 					<div className='title'>ID</div>
 					<div>

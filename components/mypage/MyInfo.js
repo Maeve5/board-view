@@ -48,17 +48,23 @@ function MyInfo({ user }) {
 				name: name,
 				password: password
 			}).then((response) => {
+				console.log(response);
 				Modal.info({
 					title: '알림',
 					content: '변경되었습니다.',
 				});
 				router.reload();
 				setPassword('');
-			});			
+			}).catch((error) => {
+				Modal.error({
+					title: '오류',
+					content: error.response.data,
+				});
+			})
 		}
 		catch (err) {
 			// [code] error message
-			alert(`[${err.response.status}] ${err.response.data.message}`);
+			alert(`[${err.response.status}] ${err.response.data}`);
 		}
 	}, [password]);
 
