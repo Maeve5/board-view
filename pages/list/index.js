@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { router } from 'next/router';
 import TopHeader from '../../components/global/TopHeader';
-import { Button, Pagination } from 'antd';
 import Posts from '../../components/list/Posts';
 import { server } from '../../modules/server';
+import { Button, Pagination } from 'antd';
 
 function ListPage({ success, isLogin, user, result }) {
 
@@ -19,7 +19,7 @@ function ListPage({ success, isLogin, user, result }) {
 			setLoading(true);
 			setPosts(result);
 			setLoading(false);
-		}
+		};
 		fetchPosts();
 	}, []);
 
@@ -39,11 +39,11 @@ function ListPage({ success, isLogin, user, result }) {
 
 				{/* 게시글 목록 */}
 				<div style={{ display: 'block', textAlign: 'center' }}>
-					<Posts postArr={postArr} firstPost={firstPost} loading={loading} />
+					{!loading && <Posts postArr={postArr} firstPost={firstPost} />}
 				</div>
 
 				<div className='pagination'>
-					<Pagination defaultCurrent={currentPage} onChange={(e) => setCurrentPage(e)} pageSize={pageSize} total={result.length} />
+					<Pagination defaultCurrent={currentPage} onChange={(e) => setCurrentPage(e)} pageSize={pageSize} total={result ? result.length : 0} />
 				</div>
 			</div>
 
@@ -57,7 +57,7 @@ function ListPage({ success, isLogin, user, result }) {
 
 export default React.memo(ListPage);
 
-export const getServerSideProps = async ({ req }) => {
+export const getServerSideProps = async ({ req, res }) => {
 
 	try {
 		let init = await server({ req });
@@ -65,19 +65,13 @@ export const getServerSideProps = async ({ req }) => {
 		return { props: { success, isLogin, user, result }};
 	}
 	catch (err) {
-		console.log('index', err.response.status);
 		let error = {};
-		if (err.response.status === 500) {
+		if (err.response?.status === 500 || err.code === 'ECONNREFUSED' || 'ECONNRESET' || 'ERR_BAD_RESPONSE') {
 			error = {
 				redirect: {
 					permanent: false,
 					destination: '/500'
 				}
-			}
-		}
-		else if (err.response.status === 400 || 401 || 404 || 419 ) {
-			error = {
-				
 			}
 		}
 		else {
@@ -89,11 +83,5 @@ export const getServerSideProps = async ({ req }) => {
 			}
 		}
 		return error;
-		// return {
-		// 	redirect: {
-		// 		permanent: false,
-		// 		destination: '/404'
-		// 	}
-		// }
 	}
 };

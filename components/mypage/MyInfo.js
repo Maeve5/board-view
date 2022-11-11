@@ -22,12 +22,12 @@ function MyInfo({ user }) {
 	const onClickButton = useCallback(() => {
 		// name이 없을 때
 		if (!name) {
-			alert('변경사항을 입력해주세요.');
+			Modal.warning({ content: '변경사항을 입력해주세요.' });
 			return false;
 		}
 		// 수정 전/후가 같을 때
 		if (user.name === name) {
-			alert('변경된 사항이 없습니다.');
+			Modal.warning({ content: '변경된 사항이 없습니다.' });
 			return false;
 		}
 		// 모달 오픈
@@ -39,7 +39,7 @@ function MyInfo({ user }) {
 	// 비밀번호 확인 후 수정
 	const onChangeInfo = useCallback(async () => {
 		if (!password) {
-			alert('비밀번호를 입력해주세요.');
+			Modal.warning({ content: '비밀번호를 입력해주세요.' });
 			return false;
 		}
 		try {
@@ -48,14 +48,17 @@ function MyInfo({ user }) {
 				name: name,
 				password: password
 			}).then((response) => {
-				alert('변경되었습니다.');
+				Modal.info({
+					title: '알림',
+					content: '변경되었습니다.',
+				});
 				router.reload();
 				setPassword('');
 			});			
 		}
 		catch (err) {
-			console.log('myinfoerr', err);
-			alert(err.response.data.message);
+			// [code] error message
+			alert(`[${err.response.status}] ${err.response.data.message}`);
 		}
 	}, [password]);
 

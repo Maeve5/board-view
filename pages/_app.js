@@ -1,9 +1,9 @@
 import { RecoilRoot } from 'recoil';
 import Head from 'next/head'
+import Spinner from '../components/global/Spinner';
 import { ConfigProvider } from 'antd';
 import koKR from 'antd/lib/locale/ko_KR';
 import 'antd/dist/antd.css';
-import Spinner from '../components/global/Spinner';
 
 function MyApp({ Component, pageProps }) {
 	return (

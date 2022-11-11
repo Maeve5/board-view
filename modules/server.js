@@ -16,19 +16,12 @@ export const server = async ({ req }) => {
 	const token = req.cookies.cookie ? req.cookies.cookie : '';
 
 	try {
-		// if (token === null) {
-		// 	throw new Error('로그인이 필요합니다.')
-		// }
-
-		// if (uri)
-
 		// header에 token 추가
 		API.defaults.headers.common['Authorization'] = token ? token : '';
 
 		const res = await API.post('/v1/auth/token');
-
 		const { success, isLogin, user, result } = await res.data;
-
+		
 		data = {
 			...data,
 			success: success,

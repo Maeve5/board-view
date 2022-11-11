@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { router } from 'next/router';
-import { AXIOS } from '../../modules/axios';
 import MyPosts from './MyPosts';
+import { AXIOS } from '../../modules/axios';
 import { Button, Pagination } from 'antd';
 
 function MyPostsGroup({ user }) {
@@ -35,7 +35,7 @@ function MyPostsGroup({ user }) {
 
 				{/* 내가 쓴 글 목록 */}
 				<div style={{ display: 'block', textAlign: 'center' }}>
-					<MyPosts postArr={postArr} firstPost={firstPost} loading={loading} />
+					{!loading && <MyPosts postArr={postArr} firstPost={firstPost} />}
 				</div>
 
 				<div className='pagination'>

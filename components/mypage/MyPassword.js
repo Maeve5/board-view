@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { router } from 'next/router';
 import API from '../../modules/api';
-import { Button, Input } from 'antd';
+import { Button, Input, Modal } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 
 function MyPassword({ user }) {
@@ -21,17 +21,26 @@ function MyPassword({ user }) {
 	const onChangePW = useCallback(async () => {
 		// 값이 없을 때
 		if ( !password || !newPassword1 || !newPassword2 ) {
-			alert('빈칸이 있습니다.');
+			Modal.warning({
+				title: '변경 실패',
+				content: '빈 칸이 있습니다.\n빈 칸을 채워주세요.'
+			});
 			return false;
 		}
 		// 현재 비밀번호 !== 새 비밀번호
 		else if (password === newPassword1) {
-			alert('현재 비밀번호와 다른 비밀번호를 입력해주세요.');
+			Modal.warning({
+				title: '변경 실패',
+				content: '현재 비밀번호와 다른 비밀번호를 입력해주세요.'
+			});
 			return false;
 		}
 		// 새 비밀번호 !== 새 비밀번호 확인
 		else if (newPassword1 !== newPassword2) {
-			alert('새 비밀번호가 일치하지 않습니다.');
+			Modal.warning({
+				title: '변경 실패',
+				content: '새 비밀번호가 일치하지 않습니다.'
+			});
 			return false;
 		}
 
@@ -41,15 +50,34 @@ function MyPassword({ user }) {
 				password: password,
 				newPassword: newPassword1
 			}).then((response) => {
-				alert('변경되었습니다.');
+				Modal.info({
+					title: '알림',
+					content: '변경되었습니다.',
+				});
 				router.reload();
 				setPassword('');
 				setNewPassword1('');
 				setNewPassword2('');
+			}).catch((error) => {
+				if (error.response.status === 400) {
+					Modal.warning({
+						title: '변경 실패',
+						content: error.response.data,
+					});
+				}
+				else {
+					Modal.error({
+						title: '오류',
+						content: '오류가 발생했습니다.\n관리자에게 문의해주세요.',
+					});
+				}
 			});
 		}
 		catch (err) {
-			alert(err.response.data.message);
+			Modal.error({
+				title: '오류',
+				content: err.response.data.message,
+			});
 		}
 	}, [password, newPassword1, newPassword2]);
 

@@ -9,15 +9,12 @@ function Spinner({ children }) {
 	const [isSpin, setIsSpin] = useRecoilState(spinState);
 
 	useEffect(() => {
-        router.events.on('routeChangeStart', () => {
-            setIsSpin(true);
-        });
-        router.events.on('routeChangeComplete', () => {
-            setIsSpin(false);
-        });
-        router.events.on('routeChangeError', () => {
-            setIsSpin(false);
-        });
+		// 페이지 변경 시작
+        router.events.on('routeChangeStart', () => setIsSpin(true));
+		// 페이지 변경 완료
+        router.events.on('routeChangeComplete', () => setIsSpin(false));
+		// 페이지 에러
+        router.events.on('routeChangeError', () => setIsSpin(false));
     }, [isSpin]);
 
 	return (

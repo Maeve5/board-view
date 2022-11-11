@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { router } from 'next/router';
 import API from '../../modules/api';
@@ -18,11 +17,11 @@ function DeleteUser({ user }) {
 
 	// 회원 탈퇴 모달
 	const [isModalOpen, setIsModalOpen] = useState(false);
-
+	// 회원 탈퇴
 	const onDelete = useCallback(async () => {
 		// 값이 없을 때
 		if ( !password ) {
-			alert('빈칸이 있습니다.');
+			Modal.warning({	content: '비밀번호를 입력해주세요.'	});
 			return false;
 		}
 		try {
@@ -30,12 +29,18 @@ function DeleteUser({ user }) {
 			await API.delete(`/v1/user/${user.userKey}`, {
 				data: {password: password}
 			}).then((response) => {
-				alert('탈퇴되었습니다.');
+				Modal.info({
+					title: '알림',
+					content: '탈퇴되었습니다.',
+				});
 				router.replace('/list');
 			});
 		}
 		catch (err) {
-			alert(err.response.data.message);
+			Modal.error({
+				title: '오류',
+				content: '오류가 발생했습니다.\n관리자에게 문의해주세요.',
+			});
 		}
 	}, [password]);
 

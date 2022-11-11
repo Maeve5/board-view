@@ -1,12 +1,33 @@
-import React from 'react';
-import { Input, Spin } from 'antd';
+import React, { useState, useCallback } from 'react';
+import { router } from 'next/router';
+import { AXIOS } from '../../modules/axios';
+import { Button, Input, Modal } from 'antd';
 const { TextArea } = Input;
 
-function Post({ result }) {
+function Post({ user, result, listKey }) {
 
-	// if (loading) {
-	// 	return <Spin style={{margin: '0 auto'}} tip="Loading..." />
-	// }
+	// 삭제 확인 모달
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	// 게시글 삭제
+	const onDelete = useCallback(async () => {
+		try {
+			const token = user.token;
+			await AXIOS(`/v1/list/${listKey}`, 'delete', token)
+			.then((response) => {
+				Modal.info({
+					title: '알림',
+					content: '삭제되었습니다.'
+				});
+				router.push(`/list`);
+			});
+		}
+		catch (error) {
+			Modal.error({
+				title: '오류',
+				content: '오류가 발생했습니다.\n관리자에게 문의해주세요.',
+			});
+		}
+	}, []);
 
 	return (
 		<div className='insertpage'>
@@ -50,6 +71,20 @@ function Post({ result }) {
 				</div>
 			</div>
 
+			{/* 작성자일 때 */}
+			{result.userKey === user.userKey ?
+				<div className='button'>
+					<Button style={{ marginRight: '5px' }} onClick={() => router.push(`/list/update/${listKey}`)}>수정</Button>
+					<Button onClick={() => setIsModalOpen(true)}>삭제</Button>
+				</div>
+				: ''
+			}
+
+			{/* 삭제 확인 모달 */}
+			<Modal title='알림' open={isModalOpen} onOk={onDelete} onCancel={() => setIsModalOpen(false)}>
+				<p>삭제하시겠습니까?</p>
+			</Modal>
+
 			<style jsx>{`
 			.insertpage { margin: 100px auto; margin-bottom: 20px; max-width: 800px; min-width: 600px; width: 80%; }
 
@@ -61,6 +96,8 @@ function Post({ result }) {
 			.item { margin: 10px 0; display: flex; align-items: center; justify-content: center; border-top: 1px solid #aaa; border-bottom: 1px solid #aaa; }
 			.title { flex: 1; text-align: center; }
 			.input { flex: 8; }
+
+			.button { display: flex; align-items: center; justify-content: center; }
 			`}</style>
 		</div>
 	);

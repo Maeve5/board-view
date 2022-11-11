@@ -2,9 +2,8 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { router } from 'next/router';
 import TopHeader from '../../components/global/TopHeader';
 import { server } from '../../modules/server';
-import { Input, Button } from 'antd';
 import API from '../../modules/api';
-import { AXIOS } from '../../modules/axios';
+import { Input, Button, Modal } from 'antd';
 const { TextArea } = Input;
 
 function InsertPage({ success, isLogin, user }) {
@@ -19,11 +18,11 @@ function InsertPage({ success, isLogin, user }) {
 		nameInput.current.focus();
 	}, []);
 
-	// 데이터 추가
+	// 게시글 작성
 	const onInsert = useCallback(async () => {
-
+		// 입력값 없을 때
 		if (!title || !description) {
-			alert('빈칸이 있습니다.');
+			Modal.warning({ content: '빈 칸이 있습니다.' });
 			return false;
 		}
 
@@ -33,11 +32,19 @@ function InsertPage({ success, isLogin, user }) {
 				title: title,
 				description: description,
 				userKey: user.userKey,
+			}).then((response) => {
+				Modal.info({
+					title: '알림',
+					content: '등록되었습니다.'
+				});
+				router.push('/list');
 			});
-			router.push('/list');
 		}
 		catch (err) {
-			console.log('onInsert 에러', err);
+			Modal.error({
+				title: '오류',
+				content: '오류가 발생했습니다.\n관리자에게 문의해주세요.',
+			});
 		}		
 	}, [title, description]);
 
@@ -73,7 +80,7 @@ function InsertPage({ success, isLogin, user }) {
 				</div>
 
 				<div className='button'>
-					<Button onClick={onInsert}>게시</Button>
+					<Button onClick={onInsert} disabled={!title || !description ? true : false}>게시</Button>
 				</div>
 			</div>
 
@@ -92,18 +99,40 @@ export default React.memo(InsertPage);
 
 export const getServerSideProps = async ({ req }) => {
 
-	let init = await server({ req });
-	const { success, isLogin, user } = init;
+	try {
+		let init = await server({ req });
+		const { success, isLogin, user } = init;
 
-	if (isLogin) {
-		return { props: { success, isLogin, user }};
+		if (isLogin) {
+			return { props: { success, isLogin, user }};
+		}
+		else {
+			return {
+				redirect: {
+					permanent: false,
+					destination: '/auth/login'
+				}
+			};
+		}
 	}
-	else {
-		return {
-			redirect: {
-				permanent: false,
-				destination: '/auth/login'
+	catch (err) {
+		let error = {};
+		if (err.response?.status === 500 || err.code === 'ECONNREFUSED' || 'ECONNRESET' || 'ERR_BAD_RESPONSE') {
+			error = {
+				redirect: {
+					permanent: false,
+					destination: '/500'
+				}
 			}
-		};
+		}
+		else {
+			error = {
+				redirect: {
+					permanent: false,
+					destination: '/404'
+				}
+			}
+		}
+		return error;
 	}
 };

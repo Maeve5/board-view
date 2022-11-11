@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import router from 'next/router';
 import API from '../../modules/api';
-import { AXIOS } from '../../modules/axios';
 import { Button, Layout, Menu, Modal } from 'antd';
 const { Header } = Layout;
 
@@ -27,8 +26,17 @@ function TopHeader({ user, isLogin }) {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	const onLogout = useCallback(async () => {
-		const res = await API.post(`/v1/auth/logout`);
-		router.push('/list');
+		await API.post(`/v1/auth/logout`)
+		.then((response) => {
+			Modal.info({ content: '로그아웃 완료' });
+			router.push('/list');
+		})
+		.catch((error) => {
+			Modal.error({
+				title: '오류',
+				content: error.response.data,
+			});
+		});
 	}, []);
 
 	return (

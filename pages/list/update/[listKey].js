@@ -2,40 +2,40 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { router } from 'next/router';
 import TopHeader from '../../../components/global/TopHeader';
 import API from '../../../modules/api';
-import axios from "axios";
 import { AXIOS } from '../../../modules/axios';
 import { server } from '../../../modules/server';
-import { Input, Button } from 'antd';
+import { Input, Button, Modal } from 'antd';
 const { TextArea } = Input;
 
-function Update({ req, success, isLogin, user, listKey }) {
+function Update({ success, isLogin, user, listKey }) {
 	
-	const [result, setResult] = useState({});
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
 	const token = user.token;
 
 	// 단일 게시글 조회
-	useEffect(() => {
-		AXIOS(`/v1/list/${listKey}`, 'get', token)
+	const fetchPost = async () => {
+		await AXIOS(`/v1/list/${listKey}`, 'get', token)
 		.then((response) => {
-			setResult(response);
-			return result;
+			setTitle(response.title);
+			setDescription(response.description);
+		}).catch((error) => {
+			Modal.error({
+				title: '오류',
+				content: '오류가 발생했습니다.\n관리자에게 문의해주세요.',
+			});
 		});
+	};
+	
+	useEffect(() => {
+		fetchPost();
 	}, []);
 
-	useEffect(() => {
-		if (result) {
-			setTitle(result.title);
-			setDescription(result.description);
-		}
-	}, [result]);
-
-	// 수정
+	// 게시글 수정
 	const onUpdate = useCallback (async () => {
-
+		// 입력값 없을 때
 		if ( !title || !description ) {
-			alert('빈칸이 있습니다.');
+			Modal.warning({ content: '빈 칸이 있습니다.' });
 			return false;
 		}
 
@@ -45,12 +45,18 @@ function Update({ req, success, isLogin, user, listKey }) {
 				title: title,
 				description: description
 			}).then((response) => {
-				alert('수정되었습니다.');
+				Modal.info({
+					title: '알림',
+					content: '수정되었습니다.'
+				});
 				router.push(`/list/${listKey}`);
 			});
 		}
 		catch (error) {
-			console.log('onUpdate 에러', error);
+			Modal.error({
+				title: '오류',
+				content: '오류가 발생했습니다.\n관리자에게 문의해주세요.',
+			});
 		}
 	}, [title, description]);
 
@@ -75,7 +81,6 @@ function Update({ req, success, isLogin, user, listKey }) {
 					<div className='title'>내용</div>
 					<div className='input'>
 						<TextArea
-							maxLength={100}
 							placeholder='내용을 입력해 주세요.'
 							style={{ minHeight: 285, resize: 'none' }}
 							value={description}
@@ -97,26 +102,48 @@ function Update({ req, success, isLogin, user, listKey }) {
 			`}</style>
 		</>
 	)
-}
+};
 
 export default React.memo(Update);
 
 export const getServerSideProps = async ({ req, params }) => {
 
-	let listKey = params.listKey;
-	let init = await server({ req });
-	const { success, isLogin, user, result } = init;
+	try {
+		let listKey = params.listKey;
+		let init = await server({ req });
+		const { success, isLogin, user } = init;
 
-	if (isLogin) {
-		return { props: { success, isLogin, user, result, listKey } };
+		if (isLogin) {
+			return { props: { success, isLogin, user, listKey } };
+		}
+		else {
+			return {
+				redirect: {
+					permanent: false,
+					destination: '/auth/login',
+					errorMessage: init.message ? init.message : ''
+				}
+			};
+		}
 	}
-	else {
-		return {
-			redirect: {
-				permanent: false,
-				destination: '/auth/login',
-				errorMessage: init.message ? init.message : ''
+	catch (err) {
+		let error = {};
+		if (err.response?.status === 500 || err.code === 'ECONNREFUSED' || 'ECONNRESET' || 'ERR_BAD_RESPONSE') {
+			error = {
+				redirect: {
+					permanent: false,
+					destination: '/500'
+				}
 			}
-		};
+		}
+		else {
+			error = {
+				redirect: {
+					permanent: false,
+					destination: '/404'
+				}
+			}
+		}
+		return error;
 	}
 };

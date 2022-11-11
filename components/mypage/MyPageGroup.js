@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Layout, Tabs } from 'antd';
+import React from 'react';
 import MyInfo from './Myinfo';
 import MyPassword from './MyPassword';
 import MyPostsGroup from './MyPostsGroup';
 import DeleteUser from './DeleteUser';
+import { Layout, Tabs } from 'antd';
 
 function MyPageGroup({ user }) {
 
@@ -31,29 +31,13 @@ function MyPageGroup({ user }) {
 			}
 		];
 
-	// 탭 활성화
-	// const [activeKey, setActiveKey] = useState('myinfo');
-
-	// useEffect(() => {
-	// 	let key = localStorage.getItem('TabKey');
-	// 	console.log('key', key);
-	// 	setActiveKey(key);
-	// }, []);
-
-	// const onSaveTabKey = useCallback((e) => {
-	// 	localStorage.setItem('TabKey', e);
-	// }, [activeKey]);
-	
-
 	return (
 		<>
-			{/* 마이페이지 */}
+			{/* 마이페이지 탭 */}
 			<Layout style={{ margin: '64px auto', paddingTop: 24, minWidth: 600, width: '70%', background: 'white' }}>
 				<Tabs
 					tabPosition='left'
 					defaultActiveKey='myinfo'
-					// activeKey={activeKey}
-					// onTabClick={onSaveTabKey}
 					items={items} />
 			</Layout>
 		</>

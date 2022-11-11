@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 
 function Posts({ postArr, firstPost }) {
@@ -15,9 +15,11 @@ function Posts({ postArr, firstPost }) {
 			</thead>
 			<tbody>
 				{postArr.length === 0 ?
+					// 게시글 없을 때
 					<tr>
 						<td colSpan='4' height='100' className='no-list'>등록된 게시글이 없습니다.</td>
 					</tr> :
+					// 게시글 있을 때
 					postArr.map((row, idx) => {
 						return (
 							<tr key={row.rowKey} className='td'>

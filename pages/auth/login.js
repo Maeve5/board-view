@@ -1,47 +1,51 @@
 import React, { useState, useCallback } from 'react';
 import { router } from 'next/router';
 import TopHeader from '../../components/global/TopHeader';
-import { useSetRecoilState } from 'recoil';
-import loginState from '../../atom/loginState';
 import API from '../../modules/api';
-import { Button, Input } from 'antd';
+import { Button, Input, Modal } from 'antd';
 import { EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons';
 
 function LoginPage() {
 
 	const [id, setId] = useState('');
 	const [password, setPassword] = useState('');
-	const setIsLogin = useSetRecoilState(loginState);
 
+	// 로그인
 	const onLogin = useCallback(async () => {
-
+		// 입력값 없을 때
 		if (!id || !password ) {
-			alert('빈 칸이 있습니다.');
+			Modal.warning({ content: '빈 칸이 있습니다.' });
 			return false;
 		}
 
-		// 로그인
 		try {
-			const res = await API.post('/v1/auth/login', {
+			await API.post('/v1/auth/login', {
 				id: id,
 				password: password,
-			})
-			// 로그인 성공
-			if (res.data.success) {
-				setIsLogin(true);
-				alert('로그인 성공');
-				router.back();
-			}
-			// 로그인 실패
-			else {
-				// '비밀번호가 틀렸습니다.'
-				alert(res.data.message);
-			}
+			}).then((response) => {
+				Modal.info({
+					title: '알림',
+					content: '로그인 성공',
+				});
+				router.replace('/list');
+			}).catch((error) => {
+				// 로그인 실패
+				if (error.response.status === 400) {
+					Modal.warning({ content: error.response.data });
+				}
+				else {
+					Modal.error({
+						title: '오류',
+						content: error.response.data,
+					});
+				}
+			});
 		}
 		catch (error) {
-			// if (result.length === 0)
-			console.log('onLogin 에러', error);
-			alert(error.response.data.message);
+			Modal.error({
+				title: '오류',
+				content: '오류가 발생했습니다.\n관리자에게 문의해주세요.',
+			});
 		}
 
 	}, [id, password]);
@@ -51,7 +55,6 @@ function LoginPage() {
 			<TopHeader />
 
 			<div className='mypage'>
-				<form ></form>
 				<div className='item'>
 					<div className='title'>ID</div>
 					<div>
@@ -92,10 +95,3 @@ function LoginPage() {
 };
 
 export default React.memo(LoginPage);
-
-// export const getServerSideProps = async ({ req }) => {
-	
-// 	const token = { cookies: req.cookies.cookie ? req.cookies.cookie : '' };
-
-// 	return { props : { token }};
-// };
