@@ -48,7 +48,6 @@ function MyInfo({ user }) {
 				name: name,
 				password: password
 			}).then((response) => {
-				console.log(response);
 				Modal.info({
 					title: '알림',
 					content: '변경되었습니다.',

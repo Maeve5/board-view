@@ -32,7 +32,9 @@ function LoginPage() {
 			}).catch((error) => {
 				// 로그인 실패
 				if (error.response.status === 400) {
-					Modal.warning({ content: error.response.data,
+					Modal.warning({
+						title: '로그인',
+						content: error.response.data,
 					});
 				}
 				else {
@@ -40,11 +42,9 @@ function LoginPage() {
 						title: '오류',
 						content: error.response.data,
 					});
-				Modal.info({
-					title: '알림',
-					content: '로그인 성공',
-			})};
+				}
 			});
+			
 		}
 		catch (error) {
 			Modal.error({

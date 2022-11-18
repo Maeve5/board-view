@@ -58,7 +58,7 @@ function ListPage({ success, isLogin, user, result }) {
 export default React.memo(ListPage);
 
 export const getServerSideProps = async ({ req, res }) => {
-
+	console.log(req.cookies);
 	try {
 		let init = await server({ req });
 		const { success, isLogin, user, result } = init;
